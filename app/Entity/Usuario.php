@@ -11,12 +11,9 @@
     {
         public $id;
         public $nome;
-
         public $email;
-
         public $senha;
         public $telefone;
-
         public $perfil;
 
         public function cadastrar()

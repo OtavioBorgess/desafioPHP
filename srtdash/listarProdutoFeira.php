@@ -45,7 +45,7 @@
             <td>' . $prodFeira->quantidade . '</td>
             <td>
                 <a href="viewEditarProdutoFeira.php?id='.$prodFeira->id.'" class="btn btn-info">Editar</a>
-                <a href="viewExcluirProduto.php?id=' . $prodFeira->id . '&idFeira=' . $prodFeira->idFeira . '" class="btn btn-danger">Excluir</a>
+                <a href="viewExcluirProdutoFeira.php?id=' . $prodFeira->id . '" class="btn btn-danger">Excluir</a>
             </td>
         </tr>';
     }

@@ -31,6 +31,9 @@ if (isset($_POST['idFeira'], $_POST['idProduto'], $_POST['preco'], $_POST['quant
 
         $produto = Produto::getProduto($obProd->idProduto);
         if ($produto instanceof Produto) {
+            if($diferenca > $produto->estoque){
+                die('quantidade insuficiente');
+            }
             $produto->estoque -= $diferenca;
             $produto->atualizar();
         }

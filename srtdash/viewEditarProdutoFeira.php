@@ -93,7 +93,7 @@
 
                             <div class="text-center">
                                 <button type="submit" class="btn btn-success px-4">Editar</button>
-                                <a href="listarProdutoFeira.php" class="btn btn-danger">Cancelar</a>
+                                <a href="listarProdutoFeira.php?idFeira=<?= $prod->idFeira ?>" class="btn btn-danger">Cancelar</a>
                             </div>
                         </form>
                     </div>

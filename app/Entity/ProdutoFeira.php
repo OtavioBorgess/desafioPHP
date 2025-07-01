@@ -1,46 +1,51 @@
 <?php
 
-    namespace App\Entity;
+namespace App\Entity;
 
-    use App\Db\Database;
-    use PDO;
+use App\Db\Database;
+use PDO;
 
 
-    class ProdutoFeira
+class ProdutoFeira
+{
+    public $id;
+    public $idFeira;
+    public $idProduto;
+
+    public $preco;
+    public $quantidade;
+
+
+    public function cadastrar()
     {
-        public $id;
-        public $idFeira;
-        public $idProduto;
+        $obDatabase = new Database('produto_feira');
+        $this->id = $obDatabase->insert([
+            'idFeira' => $this->idFeira,
+            'idProduto' => $this->idProduto,
+            'preco' => $this->preco,
+            'quantidade' => $this->quantidade
+        ]);
+        return true;
+    }
 
-        public $preco;
-        public $quantidade;
-
-
-        public function cadastrar()
-        {
-            $obDatabase = new Database('produto_feira');
-            $this->id = $obDatabase->insert([
-                'idFeira' => $this->idFeira,
-                'idProduto' => $this->idProduto,
+    public function atualizar()
+    {
+        return (new Database('produto_feira'))
+            ->update('id = ' . $this->id . ' AND ' . ' idFeira = ' . $this->idFeira . ' AND ' . ' idProduto = ' . $this->idProduto, [
                 'preco' => $this->preco,
-                'quantidade' => $this->quantidade
+                'quantidade' => $this->quantidade,
             ]);
-            return true;
-        }
+    }
 
-        public function atualizar()
-        {
-            return (new Database('produto_feira'))
-                ->update('id = ' . $this->id . ' AND ' . ' idFeira = ' . $this->idFeira . ' AND ' . ' idProduto = ' . $this->idProduto,[
-                    'preco' => $this->preco,
-                    'quantidade' => $this->quantidade,
-                ]);
-        }
+    public function excluir()
+    {
+        return (new Database('produto_feira'))->delete('id = ' . $this->id);
+    }
 
-        public static function getProdutosDaFeira($idFeira)
-        {
-            $db = new Database();
-            $query = "
+    public static function getProdutosDaFeira($idFeira)
+    {
+        $db = new Database();
+        $query = "
         SELECT 
             pf.id,
             pf.idFeira,
@@ -56,14 +61,14 @@
         WHERE 
             pf.idFeira = ?
     ";
-            return $db->execute($query, [$idFeira])
-                ->fetchAll(PDO::FETCH_OBJ);
-        }
+        return $db->execute($query, [$idFeira])
+            ->fetchAll(PDO::FETCH_OBJ);
+    }
 
-        public static function getProdutoFeiraPorId($id)
-        {
-            $db = new Database();
-            $query = "
+    public static function getProdutoFeiraPorId($id)
+    {
+        $db = new Database();
+        $query = "
         SELECT
             pf.id,
             pf.idFeira,
@@ -79,14 +84,14 @@
         WHERE
             pf.id = ?
     ";
-            return $db->execute($query, [$id])
-                ->fetchObject(self::class);
-        }
+        return $db->execute($query, [$id])
+            ->fetchObject(self::class);
+    }
 
-        public static function getProduto($idFeira, $idProduto)
-        {
-            $db = new Database();
-            $query = "
+    public static function getProduto($idFeira, $idProduto)
+    {
+        $db = new Database();
+        $query = "
             SELECT
                 pf.id,
                 pf.idFeira,
@@ -96,7 +101,7 @@
             WHERE
                 pf.idFeira = ? AND pf.idProduto = ?
     ";
-            return $db->execute($query, [$idFeira, $idProduto])
-                ->fetchObject(self::class);
-        }
+        return $db->execute($query, [$idFeira, $idProduto])
+            ->fetchObject(self::class);
     }
+}

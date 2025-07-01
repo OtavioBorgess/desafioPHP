@@ -7,7 +7,6 @@
 
     class Feira
     {
-
         public $id;
         public $titulo;
         public $dataRealizacao;

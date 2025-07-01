@@ -41,11 +41,6 @@
         {
             return (new Database('produto'))->delete('id = ' . $this->id);
         }
-//        public static function getProdutos($where = null, $order = null, $limit = null)
-//        {
-//            return (new Database('produto'))->select($where, $order , $limit)
-//                ->fetchAll(PDO::FETCH_CLASS, self::class);
-//        }
 
         public static function getBuscaProduto()
         {
