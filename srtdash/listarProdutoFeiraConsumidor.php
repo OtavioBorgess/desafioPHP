@@ -1,5 +1,5 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html class="no-js" lang="pt-br">
 
 <head>
     <meta charset="utf-8">
@@ -27,52 +27,71 @@
 <?php
 include __DIR__ . '/../app/Entity/ProdutoFeira.php';
 include __DIR__ . '/../app/Entity/Feira.php';
+include __DIR__ . '/../app/Entity/Pedido.php';
+include __DIR__ . '/../app/Entity/ItemPedido.php';
 include __DIR__ . '/../app/Db/Database.php';
 
 use App\Entity\ProdutoFeira;
 use App\Entity\Feira;
-
-$filtro = $_GET['filtro'] ?? 'todos';
+use App\Entity\Pedido;
+use App\Entity\ItemPedido;
 
 session_start();
-$produtosFeira = ProdutoFeira::getProdutosDaFeiraDoProdutor($_GET['idFeira'], $_SESSION['idUsuario']);
+
+$idUsuario = $_SESSION['idUsuario'] ?? null;
+$feiras = Feira::getFeiras();
+
+$idFeiraSelecionada = $_GET['idFeira'] ?? '';
+$filtro = $_GET['filtro'] ?? 'todos';
+
+$produtosFeira = [];
+
+if ($idFeiraSelecionada && $idUsuario) {
+    $todosProdutos = ProdutoFeira::getProdutosDaFeira($idFeiraSelecionada);
+
+    $pedido = Pedido::getPedidoExistente($idUsuario, $idFeiraSelecionada);
+
+    $idsAdicionados = [];
+    if ($pedido) {
+        $itens = ItemPedido::getItensPorPedido($pedido->id);
+        $idsAdicionados = array_map(fn($item) => $item->idProdutoFeira, $itens);
+    }
+
+    $produtosFeira = array_filter($todosProdutos, function ($p) use ($idsAdicionados) {
+        return $p->quantidade > 0 && !in_array($p->id, $idsAdicionados);
+    });
+}
 
 $resultados = '';
 $dataAtual = date('Y-m-d');
 
-$feira = Feira::getFeira($_GET['idFeira']);
 
 foreach ($produtosFeira as $prodFeira) {
+    $feira = Feira::getFeira($idFeiraSelecionada);
     if (strtotime($feira->dataPrazo) >= strtotime($dataAtual)) {
-        $botao = '<a href="viewEditarProdutoFeira.php?id=' . $prodFeira->id . '" class="btn btn-info">Editar</a>';
-        $botao .= '<a href="viewExcluirProdutoFeira.php?id=' . $prodFeira->id . '" class="btn btn-danger">Excluir</a>';
+        $botao = ' <a href="viewAdicionarItem.php?idProdutoFeira=' . $prodFeira->id . '&idFeira=' . $idFeiraSelecionada . '" class="btn btn-success">Adicionar</a>';
     } else {
         $botao = '';
     }
 
     $resultados .= '<tr>
-        <td>' . $prodFeira->descricao . '</td>
-        <td>' . number_format($prodFeira->preco, 2, ',', '.') . '</td>
-        <td>' . $prodFeira->unidade . '</td>
+        <td>' . htmlspecialchars($prodFeira->descricao) . '</td>
+        <td>R$ ' . number_format($prodFeira->preco, 2, ',', '.') . '</td>
+        <td>' . htmlspecialchars($prodFeira->unidade) . '</td>
         <td>' . $prodFeira->quantidade . '</td>
         <td>' . $botao . '</td>
     </tr>';
 }
-
-$feiras = Feira::getFeiras();
-$idFeiraSelecionada = $_GET['idFeira'] ?? '';
-
-$resultados = $resultados ?: '<tr><td colspan="5">Nenhum produto encontrado nesta feira</td></tr>';
+$resultados = $resultados ?: '<tr><td colspan="6">Nenhum registro encontrado</td></tr>';
 ?>
 
 <body>
-
 <div class="page-container login-area">
     <aside class="sidebar-menu bg-dark text-light">
         <div class="sidebar-header p-3">
             <a href="painel.php" class="text-light text-decoration-none">
                 <h2>AgriFood</h2>
-                <small>Produtor</small>
+                <small>Consumidor</small>
             </a>
         </div>
         <nav class="main-menu p-3">
@@ -85,13 +104,7 @@ $resultados = $resultados ?: '<tr><td colspan="5">Nenhum produto encontrado nest
                     </ul>
                 </li>
                 <li><a href="viewListagemFeira.php" class="text-light d-block py-2">Feiras</a></li>
-                <li>
-                    <a href="#" aria-expanded="true" class="text-light d-block py-2">Produtos</a>
-                    <ul class="collapse list-unstyled ps-3">
-                        <li><a href="viewCadastroProduto.php" class="text-light">Cadastrar</a></li>
-                        <li><a href="viewListarProduto.php" class="text-light">Listar</a></li>
-                    </ul>
-                </li>
+                <li><a href="viewVisualizarPedidos.php" class="text-light d-block py-2">Pedidos</a></li>
                 <li><a href="#" class="text-light d-block py-2">Relatórios</a></li>
                 <li><a href="logout.php" class="text-light d-block py-2">Sair</a></li>
             </ul>
@@ -102,8 +115,8 @@ $resultados = $resultados ?: '<tr><td colspan="5">Nenhum produto encontrado nest
         <div class="d-flex justify-content-center">
             <div class="card w-100" style="max-width: 1000px;">
                 <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h4 class="header-title mb-0">Seus Produtos</h4>
+                    <h2 class="mb-4">Produtos da Feira</h2>
+                    <div class="d-flex justify-content-around align-items-center mb-3">
                         <form method="get" class="form-inline mb-3 justify-content-center">
                             <label for="idFeira" class="mr-2 font-weight-bold">Filtro: </label>
                             <select name="idFeira" id="idFeira" onchange="this.form.submit()" class="form-control"
@@ -115,6 +128,19 @@ $resultados = $resultados ?: '<tr><td colspan="5">Nenhum produto encontrado nest
                                 <?php endforeach; ?>
                             </select>
                         </form>
+                        <?php if ($idFeiraSelecionada):
+                            $dataAtual = date('Y-m-d');
+
+                            $feira = Feira::getFeira($idFeiraSelecionada);
+                            $status = (strtotime($feira->dataPrazo) <= strtotime($dataAtual)) ? 'Encerrada' : 'Aberta';
+                            $badgeClass = $status === 'Aberta' ? 'success' : 'danger';
+                            ?>
+                            <div class="mb-4">
+                                <h5 class="mb-0">Status:
+                                    <span class="badge bg-<?= $badgeClass ?>"><?= $status ?></span>
+                                </h5>
+                            </div>
+                        <?php endif; ?>
                     </div>
 
                     <div class="single-table">

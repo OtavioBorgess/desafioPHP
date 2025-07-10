@@ -65,6 +65,29 @@ class ProdutoFeira
             ->fetchAll(PDO::FETCH_OBJ);
     }
 
+    public static function getProdutosDaFeiraDoProdutor($idFeira, $idProduto)
+    {
+        $db = new Database();
+        $query = "
+        SELECT 
+            pf.id,
+            pf.idFeira,
+            pf.idProduto,
+            pf.preco,
+            pf.quantidade,
+            p.descricao,
+            p.unidade
+        FROM 
+            produto_feira pf
+        INNER JOIN 
+            produto p ON pf.idProduto = p.id
+        WHERE 
+            pf.idFeira = ? AND p.idUsuario = ?
+    ";
+        return $db->execute($query, [$idFeira, $idProduto])
+            ->fetchAll(PDO::FETCH_OBJ);
+    }
+
     public static function getProdutoFeiraPorId($id)
     {
         $db = new Database();

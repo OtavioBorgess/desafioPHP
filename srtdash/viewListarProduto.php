@@ -26,27 +26,27 @@
 
 <?php
 
-    include __DIR__ . '/../app/Entity/Produto.php';
-    include __DIR__ . '/../app/Db/Database.php';
+include __DIR__ . '/../app/Entity/Produto.php';
+include __DIR__ . '/../app/Db/Database.php';
 
-    use App\Entity\Produto;
+use App\Entity\Produto;
 
-    $filtro = $_GET['filtro'] ?? 'disponiveis';
+$filtro = $_GET['filtro'] ?? 'disponiveis';
 
-    switch ($filtro) {
-        case 'todos':
-            $produtos = array_filter(Produto::getBuscaProduto());
-            break;
-        case 'indisponiveis':
-            $produtos = array_filter(Produto::getBuscaProduto(), fn($p) => $p->estoque <= 0);
-            break;
-        default:
-            $produtos = array_filter(Produto::getBuscaProduto(), fn($p) => $p->estoque > 0);
-    }
+switch ($filtro) {
+    case 'todos':
+        $produtos = array_filter(Produto::getBuscaProduto());
+        break;
+    case 'indisponiveis':
+        $produtos = array_filter(Produto::getBuscaProduto(), fn($p) => $p->estoque <= 0);
+        break;
+    default:
+        $produtos = array_filter(Produto::getBuscaProduto(), fn($p) => $p->estoque > 0);
+}
 
-    $resultados = '';
-    foreach ($produtos as $produto) {
-        $resultados .= '<tr>
+$resultados = '';
+foreach ($produtos as $produto) {
+    $resultados .= '<tr>
             <td>' . $produto->descricao . '</td>
             <td>' . number_format($produto->preco, 2, ',', ' ') . '</td>
             <td>' . $produto->unidade . '</td>
@@ -58,49 +58,44 @@
                 </div>
             </td>
         </tr>';
-    }
+}
 
-    $resultados = strlen($resultados) ? $resultados : '<tr><td colspan="7">Nenhum registro encontrado</td></tr>';
+$resultados = strlen($resultados) ? $resultados : '<tr><td colspan="7">Nenhum registro encontrado</td></tr>';
 
 ?>
 
 <body>
 
 <div class="page-container login-area">
-    <!-- sidebar menu area start -->
-    <div class="sidebar-menu">
-        <div class="sidebar-header">
-            <div class="logo">
-                <a href="painelProdutor.php"><h2 class="text-light">AgriFood</h2></a>
-                <p class="text-light">Produtor</p>
-            </div>
+    <aside class="sidebar-menu bg-dark text-light">
+        <div class="sidebar-header p-3">
+            <a href="painel.php" class="text-light text-decoration-none">
+                <h2>AgriFood</h2>
+                <small>Produtor</small>
+            </a>
         </div>
-        <div class="main-menu">
-            <div class="menu-inner">
-                <nav>
-                    <ul class="metismenu" id="menu">
-                        <li>
-                            <a href="#" aria-expanded="true"><span>Perfil</span></a>
-                            <ul class="collapse">
-                                <li><a href="viewEditarPerfil.php">Editar</a></li>
-                                <li><a href="#">Alterar senha</a></li>
-                            </ul>
-                        </li>
-                        <li><a href="listarFeira.php"><span>Listar Feiras</span></a></li>
-                        <li>
-                            <a href="#" aria-expanded="true"><span>Produtos</span></a>
-                            <ul class="collapse">
-                                <li><a href="viewCadastroProduto.php">Cadastrar</a></li>
-                                <li><a href="listagemProdutoProdutor.php">Listar</a></li>
-                            </ul>
-                        </li>
-                        <li><a href="#"><span>Relatórios</span></a></li>
-                        <li><a href="logout.php"><span>Sair</span></a></li>
+        <nav class="main-menu p-3">
+            <ul class="metismenu" id="menu">
+                <li>
+                    <a href="#" aria-expanded="true" class="text-light d-block py-2">Perfil</a>
+                    <ul class="collapse list-unstyled ps-3">
+                        <li><a href="viewEditarPerfil.php" class="text-light">Editar</a></li>
+                        <li><a href="viewAlterarSenha.php" class="text-light">Alterar senha</a></li>
                     </ul>
-                </nav>
-            </div>
-        </div>
-    </div>
+                </li>
+                <li><a href="viewListagemFeira.php" class="text-light d-block py-2">Feiras</a></li>
+                <li>
+                    <a href="#" aria-expanded="true" class="text-light d-block py-2">Produtos</a>
+                    <ul class="collapse list-unstyled ps-3">
+                        <li><a href="viewCadastroProduto.php" class="text-light">Cadastrar</a></li>
+                        <li><a href="viewListarProduto.php" class="text-light">Listar</a></li>
+                    </ul>
+                </li>
+                <li><a href="#" class="text-light d-block py-2">Relatórios</a></li>
+                <li><a href="logout.php" class="text-light d-block py-2">Sair</a></li>
+            </ul>
+        </nav>
+    </aside>
 
     <div class="main-content-inner text-center">
         <div class="d-flex justify-content-center">
@@ -126,7 +121,7 @@
                     <div class="single-table">
                         <div class="table-responsive">
                             <table class="table text-center">
-                                <thead class="text-uppercase bg-secondary">
+                                <thead class="text-uppercase bg-dark">
                                 <tr class="text-white">
                                     <th scope="col">Nome</th>
                                     <th scope="col">Preço</th>

@@ -49,4 +49,10 @@
             return (new Database('feira'))->select($where, 'dataRealizacao DESC', $limit)
                 ->fetchAll(PDO::FETCH_CLASS, self::class);
         }
+
+        public static function getFeira($idFeira)
+        {
+            return (new Database('feira'))->select('id = ' . $idFeira)
+                ->fetchObject(self::class);
+        }
     }

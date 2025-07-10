@@ -18,6 +18,6 @@
 
     if (isset($_POST['excluir'])) {
         $obProd->excluir();
-        header("Location: listagemProdutoProdutor.php?status=success");
+        header("Location: viewListarProduto.php?status=success");
         exit;
     }

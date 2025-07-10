@@ -44,11 +44,8 @@
                 ]);
         }
 
-        public static function getUsuario()
+        public static function getUsuario($idUsuario)
         {
-            session_start();
-            $idUsuario = $_SESSION['idUsuario'];
-
             return (new Database('usuario'))->select('id = ' . $idUsuario)
                 ->fetchObject(self::class);
         }

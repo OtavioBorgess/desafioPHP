@@ -22,21 +22,21 @@
 </head>
 
 <?php
-    require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
-    use App\Entity\Produto;
+use App\Entity\ItemPedido;
 
-    if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
-        header('Location: viewListarProduto.php?status=error');
-        exit;
-    }
+if (!isset($_GET['id'])) {
+    header('Location: listarProdutoFeira.php?status=error');
+    exit;
+}
 
-    $prod = Produto::getProduto($_GET['id']);
+$item = ItemPedido::getItem($_GET['id']);
 
-    if (!$prod instanceof Produto) {
-        header('Location: viewListarProduto.php?status=error');
-        exit;
-    }
+if (!$item instanceof ItemPedido) {
+    header('Location: listarProdutoFeira.php?status=error');
+    exit;
+}
 ?>
 
 <body>
@@ -45,7 +45,7 @@
         <div class="sidebar-header p-3">
             <a href="painel.php" class="text-light text-decoration-none">
                 <h2>AgriFood</h2>
-                <small>Produtor</small>
+                <small>Consumidor</small>
             </a>
         </div>
         <nav class="main-menu p-3">
@@ -58,13 +58,7 @@
                     </ul>
                 </li>
                 <li><a href="viewListagemFeira.php" class="text-light d-block py-2">Feiras</a></li>
-                <li>
-                    <a href="#" aria-expanded="true" class="text-light d-block py-2">Produtos</a>
-                    <ul class="collapse list-unstyled ps-3">
-                        <li><a href="viewCadastroProduto.php" class="text-light">Cadastrar</a></li>
-                        <li><a href="viewListarProduto.php" class="text-light">Listar</a></li>
-                    </ul>
-                </li>
+                <li><a href="viewVisualizarPedidos.php" class="text-light d-block py-2">Pedidos</a></li>
                 <li><a href="#" class="text-light d-block py-2">Relatórios</a></li>
                 <li><a href="logout.php" class="text-light d-block py-2">Sair</a></li>
             </ul>
@@ -77,14 +71,15 @@
                 <div class="card shadow-sm border-0">
                     <div class="card-body text-center bg-secondary p-4 rounded">
                         <h1 class="h4 mb-4 text-light">Excluir Produto</h1>
-                        <form action="excluirProduto.php" method="post" class="bg-secondary">
-                            <input type="hidden" name="id" value="<?= $prod->id ?>">
+                        <form action="removerItemPedido.php" method="post" class="bg-secondary">
+                            <input type="hidden" name="id" value="<?= $item->id ?>">
+                            <input type="hidden" name="idFeira" value="<?= $item->idFeira ?>">
                             <p class="mb-4 text-light">
-                                Deseja realmente excluir o produto <strong><?= $prod->descricao ?></strong>?
+                                Deseja realmente excluir o produto <strong><?= $item->descricao ?></strong> da sua cesta?
                             </p>
                             <div>
                                 <button type="submit" class="btn btn-danger" name="excluir">Excluir</button>
-                                <a href="viewListarProduto.php" class="btn btn-info">Voltar</a>
+                                <a href="viewVisualizarPedidos.php?idFeira=<?= $item->idFeira ?>" class="btn btn-info">Voltar</a>
                             </div>
                         </form>
                     </div>

@@ -1,30 +1,21 @@
 <?php
-    require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
-    session_start();
+session_start();
 
-    use App\Entity\Usuario;
+use App\Entity\Usuario;
 
-    $return = Usuario::login($_POST['email']);
+$usuario = Usuario::login($_POST['email']);
 
-    $email = $_POST['email'];
-    $senha = $_POST['senha'];
+if ($usuario && password_verify($_POST['senha'], $usuario->senha)) {
+    $_SESSION['idUsuario'] = $usuario->id;
 
-    if (password_verify($_POST['senha'], $return->senha)) {
-        $_SESSION['idUsuario'] = $return->id;
-        switch ($return->perfil) {
-            case 'produtor':
-                header("location: painelProdutor.php");
-                exit;
-
-            case 'consumidor':
-                header("location: painelConsumidor.php");
-                exit;
-
-            default:
-                echo "Perfil não encontrado";
-        }
-    } else {
-        echo "<script>alert('Credenciais incorretas.'); window.location.href = 'index.php?stauts=error';</script>";
+    if ($usuario && password_verify($_POST['senha'], $usuario->senha)) {
+        $_SESSION['idUsuario'] = $usuario->id;
+        header("Location: painel.php?status=success");
         exit;
     }
+} else {
+    echo "<script>alert('Credenciais incorretas!'); window.location.href = 'index.php?status=error';</script>";
+    exit;
+}

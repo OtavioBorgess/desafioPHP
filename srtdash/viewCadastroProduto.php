@@ -26,47 +26,42 @@
 
 <body>
 <div class="page-container">
-    <!-- sidebar menu area start -->
-    <div class="sidebar-menu">
-        <div class="sidebar-header">
-            <div class="logo">
-                <a href="painelProdutor.php"><h2 class="text-light">AgriFood</h2></a>
-                <p class="text-light">Produtor</p>
-            </div>
+    <aside class="sidebar-menu bg-dark text-light">
+        <div class="sidebar-header p-3">
+            <a href="painel.php" class="text-light text-decoration-none">
+                <h2>AgriFood</h2>
+                <small>Produtor</small>
+            </a>
         </div>
-        <div class="main-menu">
-            <div class="menu-inner">
-                <nav>
-                    <ul class="metismenu" id="menu">
-                        <li>
-                            <a href="#" aria-expanded="true"><span>Perfil</span></a>
-                            <ul class="collapse">
-                                <li><a href="viewEditarPerfil.php">Editar</a></li>
-                                <li><a href="viewAlterarSenha.php">Alterar senha</a></li>
-                            </ul>
-                        </li>
-                        <li><a href="listarFeira.php"><span>Listar Feiras</span></a></li>
-                        <li>
-                            <a href="#" aria-expanded="true"><span>Produtos</span></a>
-                            <ul class="collapse">
-                                <li><a href="viewCadastroProduto.php">Cadastrar</a></li>
-                                <li><a href="listagemProdutoProdutor.php">Listar</a></li>
-                            </ul>
-                        </li>
-                        <li><a href="#"><span>Relatórios</span></a></li>
-                        <li><a href="logout.php"><span>Sair</span></a></li>
+        <nav class="main-menu p-3">
+            <ul class="metismenu" id="menu">
+                <li>
+                    <a href="#" aria-expanded="true" class="text-light d-block py-2">Perfil</a>
+                    <ul class="collapse list-unstyled ps-3">
+                        <li><a href="viewEditarPerfil.php" class="text-light">Editar</a></li>
+                        <li><a href="viewAlterarSenha.php" class="text-light">Alterar senha</a></li>
                     </ul>
-                </nav>
-            </div>
-        </div>
-    </div>
+                </li>
+                <li><a href="viewListagemFeira.php" class="text-light d-block py-2">Feiras</a></li>
+                <li>
+                    <a href="#" aria-expanded="true" class="text-light d-block py-2">Produtos</a>
+                    <ul class="collapse list-unstyled ps-3">
+                        <li><a href="viewCadastroProduto.php" class="text-light">Cadastrar</a></li>
+                        <li><a href="viewListarProduto.php" class="text-light">Listar</a></li>
+                    </ul>
+                </li>
+                <li><a href="#" class="text-light d-block py-2">Relatórios</a></li>
+                <li><a href="logout.php" class="text-light d-block py-2">Sair</a></li>
+            </ul>
+        </nav>
+    </aside>
 
     <div class="login-area">
         <div class="container">
-            <div class="login-box ptb--100">
+            <div class="login-box">
 
                 <form action="cadastroProduto.php" method="post">
-                    <div class="login-form-head bg-secondary">
+                    <div class="login-form-head bg-dark">
                         <h4>Cadastrar Produto</h4>
                     </div>
                     <div class="login-form-body">
@@ -94,7 +89,7 @@
                             <input type="number" id="estoque" name="estoque" step="1" required min="0">
                         </div>
                         <div class="submit-btn-area">
-                            <button class="bg-secondary" id="form_submit" type="submit">Cadastrar<i
+                            <button class="bg-dark" id="form_submit" type="submit">Cadastrar<i
                                         class="ti-arrow-right"></i></button>
                         </div>
                     </div>
@@ -102,7 +97,6 @@
             </div>
         </div>
     </div>
-    <!-- login area end -->
 
     <!-- jquery latest version -->
     <script src="assets/js/vendor/jquery-2.2.4.min.js"></script>

@@ -16,6 +16,6 @@
         $obProduto->estoque = $_POST['estoque'];
         $obProduto->cadastrar();
 
-        header("Location:listagemProdutoProdutor.php?status=success");
+        header("Location:viewListarProduto.php?status=success");
         exit;
     }

@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Excluir Produto</title>
+    <title>Login - srtdash</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" type="image/png" href="assets/images/icon/favicon.ico">
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
@@ -22,19 +22,17 @@
 </head>
 
 <?php
+session_start();
 require __DIR__ . '/../vendor/autoload.php';
 
 use App\Entity\ProdutoFeira;
 
-if (!isset($_GET['id'])) {
-    header('Location: listarProdutoFeira.php?status=error');
-    exit;
-}
+$prodFeira = $_GET['idProdutoFeira'] ?? null;
 
-$prod = ProdutoFeira::getProdutoFeiraPorId($_GET['id']);
+$produto = ProdutoFeira::getProdutoFeiraPorId($prodFeira);
 
-if (!$prod instanceof ProdutoFeira) {
-    header('Location: listarProdutoFeira.php?status=error');
+if (!$produto) {
+    echo "Produto não encontrado.";
     exit;
 }
 ?>
@@ -45,7 +43,7 @@ if (!$prod instanceof ProdutoFeira) {
         <div class="sidebar-header p-3">
             <a href="painel.php" class="text-light text-decoration-none">
                 <h2>AgriFood</h2>
-                <small>Produtor</small>
+                <small>Consumidor</small>
             </a>
         </div>
         <nav class="main-menu p-3">
@@ -58,13 +56,7 @@ if (!$prod instanceof ProdutoFeira) {
                     </ul>
                 </li>
                 <li><a href="viewListagemFeira.php" class="text-light d-block py-2">Feiras</a></li>
-                <li>
-                    <a href="#" aria-expanded="true" class="text-light d-block py-2">Produtos</a>
-                    <ul class="collapse list-unstyled ps-3">
-                        <li><a href="viewCadastroProduto.php" class="text-light">Cadastrar</a></li>
-                        <li><a href="viewListarProduto.php" class="text-light">Listar</a></li>
-                    </ul>
-                </li>
+                <li><a href="viewVisualizarPedidos.php" class="text-light d-block py-2">Pedidos</a></li>
                 <li><a href="#" class="text-light d-block py-2">Relatórios</a></li>
                 <li><a href="logout.php" class="text-light d-block py-2">Sair</a></li>
             </ul>
@@ -72,36 +64,36 @@ if (!$prod instanceof ProdutoFeira) {
     </aside>
 
     <div class="container">
-        <div class="login-box ptb--100 bg">
-            <div class="col-md-8 col-lg-6 mx-auto">
-                <div class="card shadow-sm border-0">
-                    <div class="card-body text-center bg-secondary p-4 rounded">
-                        <h1 class="h4 mb-4 text-light">Excluir Produto</h1>
-                        <form action="excluirProdutoFeira.php" method="post" class="bg-secondary">
-                            <input type="hidden" name="id" value="<?= $prod->id ?>">
-                            <p class="mb-4 text-light">
-                                Deseja realmente excluir o produto <strong><?= $prod->descricao ?></strong>
-                            </p>
-                            <div>
-                                <button type="submit" class="btn btn-danger" name="excluir">Excluir</button>
-                                <a href="listarProdutoFeira.php?idFeira=<?= $prod->idFeira ?>" class="btn btn-info">Voltar</a>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+        <h3><?= $produto->descricao ?></h3>
+        <p>Preço: R$ <?= number_format($produto->preco, 2, ',', '.') ?></p>
+        <p>Disponível: <?= $produto->quantidade ?></p>
+
+        <form action="adicionarPedido.php" method="post">
+            <input type="hidden" name="idProdutoFeira" value="<?= $produto->id ?>">
+            <input type="hidden" name="idFeira" value="<?= $_GET['idFeira'] ?>">
+            <input type="hidden" name="preco" value="<?= $produto->preco ?>">
+
+            <div class="form-group">
+                <label for="quantidade">Quantidade (em <?= $produto->unidade?>):</label>
+                <input type="number" name="quantidade" id="quantidade" class="form-control" required min="1" max="<?= $produto->quantidade ?>">
             </div>
-        </div>
+
+            <button type="submit" class="btn btn-primary">Adicionar à Cesta</button>
+            <a href="viewListagemFeira.php?idFeira=<?= $_GET['idFeira'] ?>" class="btn btn-secondary">Voltar</a>
+        </form>
     </div>
 
-    <!-- Scripts -->
-    <script src="assets/js/vendor/jquery-2.2.4.min.js"></script>
-    <script src="assets/js/popper.min.js"></script>
-    <script src="assets/js/bootstrap.min.js"></script>
-    <script src="assets/js/owl.carousel.min.js"></script>
-    <script src="assets/js/metisMenu.min.js"></script>
-    <script src="assets/js/jquery.slimscroll.min.js"></script>
-    <script src="assets/js/jquery.slicknav.min.js"></script>
-    <script src="assets/js/plugins.js"></script>
-    <script src="assets/js/scripts.js"></script>
+
 </body>
+
+<script src="assets/js/vendor/jquery-2.2.4.min.js"></script>
+<script src="assets/js/popper.min.js"></script>
+<script src="assets/js/bootstrap.min.js"></script>
+<script src="assets/js/owl.carousel.min.js"></script>
+<script src="assets/js/metisMenu.min.js"></script>
+<script src="assets/js/jquery.slimscroll.min.js"></script>
+<script src="assets/js/jquery.slicknav.min.js"></script>
+<script src="assets/js/plugins.js"></script>
+<script src="assets/js/scripts.js"></script>
+
 </html>

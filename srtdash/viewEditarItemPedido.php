@@ -22,21 +22,29 @@
 </head>
 
 <?php
-    require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
-    use App\Entity\Produto;
+use App\Entity\ItemPedido;
+use App\Entity\ProdutoFeira;
 
-    if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
-        header('Location: viewListarProduto.php?status=error');
-        exit;
-    }
+if (!isset($_GET['id'])) {
+    header('Location: listarProdutoFeira.php?status=error');
+    exit;
+}
 
-    $prod = Produto::getProduto($_GET['id']);
+$item = ItemPedido::getItem($_GET['id']);
 
-    if (!$prod instanceof Produto) {
-        header('Location: viewListarProduto.php?status=error');
-        exit;
-    }
+if (!$item instanceof ItemPedido) {
+    header('Location: listarProdutoFeira.php?status=error');
+    exit;
+}
+
+$produto = ProdutoFeira::getProdutoFeiraPorId($item->idProdutoFeira);
+
+if (!$produto) {
+    echo "Produto não encontrado.";
+    exit;
+}
 ?>
 
 <body>
@@ -45,7 +53,7 @@
         <div class="sidebar-header p-3">
             <a href="painel.php" class="text-light text-decoration-none">
                 <h2>AgriFood</h2>
-                <small>Produtor</small>
+                <small>Consumidor</small>
             </a>
         </div>
         <nav class="main-menu p-3">
@@ -58,39 +66,31 @@
                     </ul>
                 </li>
                 <li><a href="viewListagemFeira.php" class="text-light d-block py-2">Feiras</a></li>
-                <li>
-                    <a href="#" aria-expanded="true" class="text-light d-block py-2">Produtos</a>
-                    <ul class="collapse list-unstyled ps-3">
-                        <li><a href="viewCadastroProduto.php" class="text-light">Cadastrar</a></li>
-                        <li><a href="viewListarProduto.php" class="text-light">Listar</a></li>
-                    </ul>
-                </li>
+                <li><a href="viewVisualizarPedidos.php" class="text-light d-block py-2">Pedidos</a></li>
                 <li><a href="#" class="text-light d-block py-2">Relatórios</a></li>
                 <li><a href="logout.php" class="text-light d-block py-2">Sair</a></li>
             </ul>
         </nav>
     </aside>
 
-    <div class="container">
-        <div class="login-box ptb--100 bg">
-            <div class="col-md-8 col-lg-6 mx-auto">
-                <div class="card shadow-sm border-0">
-                    <div class="card-body text-center bg-secondary p-4 rounded">
-                        <h1 class="h4 mb-4 text-light">Excluir Produto</h1>
-                        <form action="excluirProduto.php" method="post" class="bg-secondary">
-                            <input type="hidden" name="id" value="<?= $prod->id ?>">
-                            <p class="mb-4 text-light">
-                                Deseja realmente excluir o produto <strong><?= $prod->descricao ?></strong>?
-                            </p>
-                            <div>
-                                <button type="submit" class="btn btn-danger" name="excluir">Excluir</button>
-                                <a href="viewListarProduto.php" class="btn btn-info">Voltar</a>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+    <div class="container pt-5">
+        <h3><?= $produto->descricao ?></h3>
+        <p>Preço: R$ <?= number_format($produto->preco, 2, ',', '.') ?></p>
+        <p>Disponível: <?=$produto->quantidade?></p>
+
+        <form action="editarItemPedido.php" method="post">
+            <input type="hidden" name="id" value="<?= $item->id ?>">
+            <input type="hidden" name="idFeira" value="<?= $item->idFeira ?>">
+
+            <div class="form-group">
+                <label for="quantidade">Quantidade (em <?= $produto->unidade?>):</label>
+                <input type="number" name="quantidade" id="quantidade" class="form-control" required min="1"
+                       max="<?=$qtdeMaxima = $item->quantidade + $produto->quantidade?>" value="<?= $item->quantidade ?>">
             </div>
-        </div>
+
+            <button type="submit" class="btn btn-primary">Editar Item</button>
+            <a href="viewVisualizarPedidos.php" class="btn btn-secondary">Voltar</a>
+        </form>
     </div>
 
     <!-- Scripts -->

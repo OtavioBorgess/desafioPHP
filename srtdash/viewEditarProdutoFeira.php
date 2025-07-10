@@ -42,12 +42,43 @@
     }
 ?>
 
+<div class="page-container login-area">
+    <aside class="sidebar-menu bg-dark text-light">
+        <div class="sidebar-header p-3">
+            <a href="painel.php" class="text-light text-decoration-none">
+                <h2>AgriFood</h2>
+                <small>Produtor</small>
+            </a>
+        </div>
+        <nav class="main-menu p-3">
+            <ul class="metismenu" id="menu">
+                <li>
+                    <a href="#" aria-expanded="true" class="text-light d-block py-2">Perfil</a>
+                    <ul class="collapse list-unstyled ps-3">
+                        <li><a href="viewEditarPerfil.php" class="text-light">Editar</a></li>
+                        <li><a href="viewAlterarSenha.php" class="text-light">Alterar senha</a></li>
+                    </ul>
+                </li>
+                <li><a href="viewListagemFeiraviewListagemFeira.php" class="text-light d-block py-2">Feiras</a></li>
+                <li>
+                    <a href="#" aria-expanded="true" class="text-light d-block py-2">Produtos</a>
+                    <ul class="collapse list-unstyled ps-3">
+                        <li><a href="viewCadastroProduto.php" class="text-light">Cadastrar</a></li>
+                        <li><a href="viewListarProduto.php" class="text-light">Listar</a></li>
+                    </ul>
+                </li>
+                <li><a href="#" class="text-light d-block py-2">Relatórios</a></li>
+                <li><a href="logout.php" class="text-light d-block py-2">Sair</a></li>
+            </ul>
+        </nav>
+    </aside>
+
 <div class="main-content login-area">
     <div class="container py-5">
         <div class="row justify-content-center align-items-center">
             <div class="col-lg-8">
                 <div class="card shadow-lg rounded">
-                    <div class="card-header bg-secondary text-white text-center">
+                    <div class="card-header bg-dark text-white text-center">
                         <h4 class="mb-0">Editar Produto na Feira</h4>
                     </div>
                     <div class="card-body px-4 py-4">
@@ -92,7 +123,7 @@
                             </div>
 
                             <div class="text-center">
-                                <button type="submit" class="btn btn-success px-4">Editar</button>
+                                <button type="submit" class="btn btn-dark px-4">Editar</button>
                                 <a href="listarProdutoFeira.php?idFeira=<?= $prod->idFeira ?>" class="btn btn-danger">Cancelar</a>
                             </div>
                         </form>

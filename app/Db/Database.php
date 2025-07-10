@@ -5,7 +5,7 @@
     use PDO;
     use PDOException;
 
-    class DataBase
+    class Database
     {
         const HOST = 'localhost';
         const NAME = 'agrifood';

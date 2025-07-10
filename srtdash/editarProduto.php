@@ -24,7 +24,7 @@
         $obProd->unidade = $_POST['unidade'];
         $obProd->estoque = $_POST['estoque'];
         $obProd->atualizar();
-        header("location: listagemProdutoProdutor.php");
+        header("location: viewListarProduto.php");
         exit;
     }
 

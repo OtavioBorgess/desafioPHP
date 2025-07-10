@@ -25,64 +25,61 @@
 </head>
 
 <?php
-    require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
-    use App\Entity\Produto;
+use App\Entity\Produto;
 
-    if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
-        header('Location: listagemProdutoProdutor.php?status=error');
-        exit;
-    }
+if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
+    header('Location: viewListarProduto.php?status=error');
+    exit;
+}
 
-    $prod = Produto::getProduto($_GET['id']);
+$prod = Produto::getProduto($_GET['id']);
 
-    if (!$prod instanceof Produto) {
-        header('Location: listagemProdutoProdutor.php?status=error');
-        exit;
-    }
+if (!$prod instanceof Produto) {
+    header('Location: viewListarProduto.php?status=error');
+    exit;
+}
 
 ?>
 
 <body>
 <div class="page-container login-area">
-    <div class="sidebar-menu">
-        <div class="sidebar-header">
-            <div class="logo">
-                <a href="painelProdutor.php"><h2 class="text-light">AgriFood</h2></a>
-                <p class="text-light">Produtor</p>
-            </div>
+    <aside class="sidebar-menu bg-dark text-light">
+        <div class="sidebar-header p-3">
+            <a href="painel.php" class="text-light text-decoration-none">
+                <h2>AgriFood</h2>
+                <small>Produtor</small>
+            </a>
         </div>
-        <div class="main-menu">
-            <div class="menu-inner">
-                <nav>
-                    <ul class="metismenu" id="menu">
-                        <li>
-                            <a href="#" aria-expanded="true"><span>Perfil</span></a>
-                            <ul class="collapse">
-                                <li><a href="viewEditarPerfil.php">Editar</a></li>
-                                <li><a href="viewAlterarSenha.php">Alterar senha</a></li>
-                            </ul>
-                        </li>
-                        <li><a href="listarFeira.php"><span>Listar Feiras</span></a></li>
-                        <li>
-                            <a href="#" aria-expanded="true"><span>Produtos</span></a>
-                            <ul class="collapse">
-                                <li><a href="viewCadastroProduto.php">Cadastrar</a></li>
-                                <li><a href="listagemProdutoProdutor.php">Listar</a></li>
-                            </ul>
-                        </li>
-                        <li><a href="#"><span>Relatórios</span></a></li>
-                        <li><a href="logout.php"><span>Sair</span></a></li>
+        <nav class="main-menu p-3">
+            <ul class="metismenu" id="menu">
+                <li>
+                    <a href="#" aria-expanded="true" class="text-light d-block py-2">Perfil</a>
+                    <ul class="collapse list-unstyled ps-3">
+                        <li><a href="viewEditarPerfil.php" class="text-light">Editar</a></li>
+                        <li><a href="viewAlterarSenha.php" class="text-light">Alterar senha</a></li>
                     </ul>
-                </nav>
-            </div>
-        </div>
-    </div>
+                </li>
+                <li><a href="viewListagemFeira.php" class="text-light d-block py-2">Feiras</a></li>
+                <li>
+                    <a href="#" aria-expanded="true" class="text-light d-block py-2">Produtos</a>
+                    <ul class="collapse list-unstyled ps-3">
+                        <li><a href="viewCadastroProduto.php" class="text-light">Cadastrar</a></li>
+                        <li><a href="viewListarProduto.php" class="text-light">Listar</a></li>
+                    </ul>
+                </li>
+                <li><a href="#" class="text-light d-block py-2">Relatórios</a></li>
+                <li><a href="logout.php" class="text-light d-block py-2">Sair</a></li>
+            </ul>
+        </nav>
+    </aside>
+
     <div class="container">
         <div class="login-box ptb--100">
 
             <form action="editarProduto.php" method="post">
-                <div class="login-form-head bg-secondary">
+                <div class="login-form-head bg-dark">
                     <h4>Editar Produto</h4>
                 </div>
                 <div class="login-form-body">
@@ -112,7 +109,7 @@
                                value="<?= $prod->estoque ?>">
                     </div>
                     <div class="submit-btn-area">
-                        <button class="bg-secondary" id="form_submit" type="submit">Editar<i class="ti-arrow-right"></i>
+                        <button class="bg-dark" id="form_submit" type="submit">Editar<i class="ti-arrow-right"></i>
                         </button>
                     </div>
                 </div>

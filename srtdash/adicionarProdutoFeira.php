@@ -18,10 +18,6 @@
             die('Produto não encontrado');
         }
 
-        if($_POST['quantidade'] > $produto->estoque){
-            die('Estoque insuficiente.');
-        }
-
         $produto->estoque -= $_POST['quantidade'];
         $produto->atualizar();
 
@@ -32,6 +28,6 @@
         $obFeiraProduto->quantidade = $_POST['quantidade'];
         $obFeiraProduto->cadastrar();
 
-        header("Location:listarFeira.php?status=success");
+        header("Location:viewListagemFeira.php?status=success");
         exit;
     }
