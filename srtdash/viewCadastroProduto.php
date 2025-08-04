@@ -59,7 +59,6 @@
     <div class="login-area">
         <div class="container">
             <div class="login-box">
-
                 <form action="cadastroProduto.php" method="post">
                     <div class="login-form-head bg-dark">
                         <h4>Cadastrar Produto</h4>

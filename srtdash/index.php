@@ -27,8 +27,16 @@
 <body>
 <div class="login-area">
     <div class="container">
-        <div class="login-box ptb--100">
-
+        <?php if (isset($_GET['status']) && $_GET['status'] === 'success'): ?>
+            <div class="alert alert-success text-center">
+                Cadastro realizado com sucesso!
+            </div>
+        <?php elseif (isset($_GET['status']) && $_GET['status'] === 'error'): ?>
+            <div class="alert alert-danger text-center">
+                Cadastro inválido!
+            </div>
+        <?php endif; ?>
+        <div class="login-box">
             <form action="verificarLogin.php" method="post">
                 <div class="login-form-head">
                     <h4>LOGIN</h4>

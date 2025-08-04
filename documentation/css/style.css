@@ -193,3 +193,7 @@ pre {
 .tree-viewer-pd{
 	padding:30px;
 }
+
+.table.table-striped thead th {
+    border: none !important;
+}

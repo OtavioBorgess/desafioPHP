@@ -13,14 +13,12 @@
     <link rel="stylesheet" href="assets/css/metisMenu.css">
     <link rel="stylesheet" href="assets/css/owl.carousel.min.css">
     <link rel="stylesheet" href="assets/css/slicknav.min.css">
-    <!-- amchart css -->
     <link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all"/>
-    <!-- others css -->
     <link rel="stylesheet" href="assets/css/typography.css">
     <link rel="stylesheet" href="assets/css/default-css.css">
     <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="assets/css/responsive.css">
-    <!-- modernizr css -->
     <script src="assets/js/vendor/modernizr-2.8.3.min.js"></script>
 </head>
 
@@ -46,18 +44,21 @@ switch ($filtro) {
 
 $resultados = '';
 foreach ($produtos as $produto) {
+    $id = $produto->id;
+    $p_name = $produto->descricao;
+
     $resultados .= '<tr>
-            <td>' . $produto->descricao . '</td>
-            <td>' . number_format($produto->preco, 2, ',', ' ') . '</td>
-            <td>' . $produto->unidade . '</td>
-            <td>' . $produto->estoque . '</td> 
-            <td>
-                <div>
-                    <a href="viewEditarProduto.php?id=' . $produto->id . '" class="btn btn-info">Editar</a>
-                    <a href="viewExcluirProduto.php?id=' . $produto->id . '" class="btn btn-danger">Excluir</a>
-                </div>
-            </td>
-        </tr>';
+        <td>' . htmlspecialchars($produto->descricao) . '</td>
+        <td>' . number_format($produto->preco, 2, ',', ' ') . '</td>
+        <td>' . htmlspecialchars($produto->unidade) . '</td>
+        <td>' . (int)$produto->estoque . '</td>
+        <td>
+            <div>
+                <a href="index.php?id=' . $id . '&flag=edit" class="fa fa-edit" title="Editar" style="margin-right: 10px;"></a>
+                 <a href="javascript:void(0)" class="fa fa-trash-o text-danger" title="Excluir" onclick="delProduto(' . $id . ', \'' . addslashes($p_name) . '\')"></a>
+            </div>
+        </td>
+    </tr>';
 }
 
 $resultados = strlen($resultados) ? $resultados : '<tr><td colspan="7">Nenhum registro encontrado</td></tr>';
@@ -65,6 +66,53 @@ $resultados = strlen($resultados) ? $resultados : '<tr><td colspan="7">Nenhum re
 ?>
 
 <body>
+<div class="modal fade" id="modalAdicionarProduto" tabindex="-1" role="dialog" aria-labelledby="modalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="modalLabel">Adicionar Produto</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="post">
+                <div class="modal-body bg-light">
+                    <div class="form-group mb-3">
+                        <label for="descricao" class="font-weight-bold">Descrição</label>
+                        <input type="text" name="descricao" class="form-control" placeholder="Ex: Tomate cereja"
+                               required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="preco" class="font-weight-bold">Preço (R$)</label>
+                        <input type="number" name="preco" step="0.01" class="form-control" placeholder="Ex: 4.50"
+                               required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="unidade" class="font-weight-bold">Unidade</label>
+                        <select name="unidade" id="unidade" class="form-control" style="padding: 0 8px">
+                            <option value="kg">kg</option>
+                            <option value="g">g</option>
+                            <option value="un">un</option>
+                        </select>
+                    </div>
+                    <div class="form-group mb-0">
+                        <label for="estoque" class="font-weight-bold">Estoque</label>
+                        <input type="number" name="estoque" class="form-control" placeholder="Ex: 100" required>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light d-flex justify-content-center align-items-center">
+                    <button type="submit" class="btn btn-success w-50">
+                        <i class="fa fa-check mr-1"></i>Salvar Produto
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary w-50" data-dismiss="modal">
+                        <i class="fa fa-times mr-1"></i>Cancelar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 <div class="page-container login-area">
     <aside class="sidebar-menu bg-dark text-light">
@@ -101,8 +149,8 @@ $resultados = strlen($resultados) ? $resultados : '<tr><td colspan="7">Nenhum re
         <div class="d-flex justify-content-center">
             <div class="card w-100" style="max-width: 1000px;">
                 <div class="card-body">
+                    <h2 class=" mb-4">Seus Produtos</h2>
                     <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h4 class="header-title mb-0">Seus Produtos</h4>
                         <form method="get" class="form-inline">
                             <label for="filtro" class="mr-2 font-weight-bold">Filter:</label>
                             <select name="filtro" id="filtro" onchange="this.form.submit()" class="form-control"
@@ -116,6 +164,9 @@ $resultados = strlen($resultados) ? $resultados : '<tr><td colspan="7">Nenhum re
                                 </option>
                             </select>
                         </form>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalAdicionarProduto">
+                            Adicionar Produto
+                        </button>
                     </div>
 
                     <div class="single-table">
@@ -130,13 +181,12 @@ $resultados = strlen($resultados) ? $resultados : '<tr><td colspan="7">Nenhum re
                                     <th scope="col">Ações</th>
                                 </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="products">
                                 <?= $resultados ?>
                                 </tbody>
                             </table>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -153,6 +203,9 @@ $resultados = strlen($resultados) ? $resultados : '<tr><td colspan="7">Nenhum re
 <script src="assets/js/jquery.slicknav.min.js"></script>
 <script src="assets/js/plugins.js"></script>
 <script src="assets/js/scripts.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="assets/js/crud.js"></script>
 </body>
 
 </html>

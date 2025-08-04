@@ -16,3 +16,6 @@
         header("Location: index.php?status=success");
         exit;
     }
+
+    header("Location: index.php?status=error");
+    exit;

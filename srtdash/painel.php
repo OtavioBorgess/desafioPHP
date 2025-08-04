@@ -16,8 +16,8 @@
     <link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all"/>
     <link rel="stylesheet" href="assets/css/typography.css">
     <link rel="stylesheet" href="assets/css/default-css.css">
-    <link rel="stylesheet" href="assets/css/styles.css">
     <link rel="stylesheet" href="assets/css/responsive.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
     <script src="assets/js/vendor/modernizr-2.8.3.min.js"></script>
 </head>
 
@@ -60,7 +60,7 @@ foreach ($feiras as $feira) {
         <td>' . htmlspecialchars($feira->local) . '</td>
         <td>';
 
-    $pedido = Pedido::getPedidoExistente($_SESSION['idUsuario'], $feira->id);
+    $pedido = Pedido::getPedidoExistente($user->id, $feira->id);
     if ($user->perfil === 'consumidor') {
         if ($pedido) {
             $resultados .= '<a href="viewVisualizarPedidos.php?idFeira=' . $feira->id . '" class="btn btn-info" title="Ver Pedido">Ver Pedido</a>';
@@ -126,13 +126,7 @@ $resultados = $resultados ?: '<tr><td colspan="7">Nenhum registro encontrado</td
                         </ul>
                     </li>
                     <li><a href="viewListagemFeira.php" class="text-light d-block py-2">Feiras</a></li>
-                    <li>
-                        <a href="#" aria-expanded="true" class="text-light d-block py-2">Produtos</a>
-                        <ul class="collapse list-unstyled ps-3">
-                            <li><a href="viewCadastroProduto.php" class="text-light">Cadastrar</a></li>
-                            <li><a href="viewListarProduto.php" class="text-light">Listar</a></li>
-                        </ul>
-                    </li>
+                    <li><a href="viewListarProduto.php" aria-expanded="true" class="text-light d-block py-2">Produtos</a></li>
                     <li><a href="#" class="text-light d-block py-2">Relatórios</a></li>
                     <li><a href="logout.php" class="text-light d-block py-2">Sair</a></li>
                 </ul>
@@ -160,10 +154,11 @@ $resultados = $resultados ?: '<tr><td colspan="7">Nenhum registro encontrado</td
                                 </select>
                             </form>
                         </div>
+
                         <div class="single-table">
                             <div class="table-responsive">
                                 <table class="table text-center">
-                                    <thead class="text-uppercase bg-secondary">
+                                    <thead class="text-uppercase bg-dark">
                                     <tr class="text-white">
                                         <th scope="col">Título</th>
                                         <th scope="col">Data Realização</th>
