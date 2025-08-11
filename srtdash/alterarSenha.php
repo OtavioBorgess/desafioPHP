@@ -2,11 +2,14 @@
     require __DIR__ . '/../vendor/autoload.php';
 
     use App\Entity\Usuario;
-
     session_start();
-    $user = $_SESSION['idUsuario'];
 
-    $return = Usuario::getUsuario($user);
+    header('Content-Type: application/json');
+
+
+    $id = $_SESSION['idUsuario'];
+
+    $return = Usuario::getUsuario($id);
 
     $senhaAtual = $_POST['senhaAtual'] ?? '';
 
@@ -15,13 +18,22 @@
             if ($_POST['novaSenha'] === $_POST['confirmaSenha']) {
                 $return->senha = password_hash($_POST['novaSenha'], PASSWORD_DEFAULT);
                 $return->alterarSenha();
-                header("Location: index.php?status=success");
+                echo json_encode([
+                    'status' => 'success',
+                    'message' => 'Senha alterada com sucesso!'
+                ]);
             } else {
-                echo "<script>alert('A nova senha e a confirmação não coincidem!'); window.location.href = 'viewAlterarSenhaProdutor.php?status=error';</script>";
-                exit;
+                echo json_encode([
+                    'status' => "error",
+                    'message' => "Senhas diferentes"
+                ]);
             }
+            exit;
         }
     } else {
-        echo "<script>alert('Senha atual incorreta!'); window.location.href = 'viewAlterarSenhaProdutor.php?status=error';</script>";
+        echo json_encode([
+            'status' => "error",
+            'message' => "Senha atual incorreta",
+        ]);
         exit;
     }

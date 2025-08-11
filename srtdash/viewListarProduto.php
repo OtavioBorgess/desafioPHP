@@ -24,48 +24,49 @@
 
 <?php
 
-include __DIR__ . '/../app/Entity/Produto.php';
-include __DIR__ . '/../app/Db/Database.php';
+    include __DIR__ . '/../app/Entity/Produto.php';
+    include __DIR__ . '/../app/Db/Database.php';
 
-use App\Entity\Produto;
+    use App\Entity\Produto;
 
-$filtro = $_GET['filtro'] ?? 'disponiveis';
+    $filtro = $_GET['filtro'] ?? 'disponiveis';
 
-switch ($filtro) {
-    case 'todos':
-        $produtos = array_filter(Produto::getBuscaProduto());
-        break;
-    case 'indisponiveis':
-        $produtos = array_filter(Produto::getBuscaProduto(), fn($p) => $p->estoque <= 0);
-        break;
-    default:
-        $produtos = array_filter(Produto::getBuscaProduto(), fn($p) => $p->estoque > 0);
-}
+    switch ($filtro) {
+        case 'todos':
+            $produtos = array_filter(Produto::getBuscaProduto());
+            break;
+        case 'indisponiveis':
+            $produtos = array_filter(Produto::getBuscaProduto(), fn($p) => $p->estoque <= 0);
+            break;
+        default:
+            $produtos = array_filter(Produto::getBuscaProduto(), fn($p) => $p->estoque > 0);
+    }
 
-$resultados = '';
-foreach ($produtos as $produto) {
-    $id = $produto->id;
-    $p_name = $produto->descricao;
+    $resultados = '';
+    foreach ($produtos as $produto) {
+        $id = $produto->id;
+        $p_name = $produto->descricao;
 
-    $resultados .= '<tr>
+        $resultados .= '<tr>
         <td>' . htmlspecialchars($produto->descricao) . '</td>
         <td>' . number_format($produto->preco, 2, ',', ' ') . '</td>
         <td>' . htmlspecialchars($produto->unidade) . '</td>
         <td>' . (int)$produto->estoque . '</td>
         <td>
             <div>
-                <a href="index.php?id=' . $id . '&flag=edit" class="fa fa-edit" title="Editar" style="margin-right: 10px;"></a>
-                 <a href="javascript:void(0)" class="fa fa-trash-o text-danger" title="Excluir" onclick="delProduto(' . $id . ', \'' . addslashes($p_name) . '\')"></a>
+                <button class="btn btn-sm btn-warning btnEditProduct" value="' . $id . '"><i class="fa fa-edit"></i></button>
+                 <button class="btn btn-sm btn-danger" onclick="delProduto(' . $id . ', \'' . ($p_name) . '\')"><i class="fa fa-trash-o"></i></button>
             </div>
         </td>
     </tr>';
-}
+    }
 
-$resultados = strlen($resultados) ? $resultados : '<tr><td colspan="7">Nenhum registro encontrado</td></tr>';
+    $resultados = strlen($resultados) ? $resultados : '<tr><td colspan="7">Nenhum registro encontrado</td></tr>';
 
 ?>
 
 <body>
+<!-- Added Product -->
 <div class="modal fade" id="modalAdicionarProduto" tabindex="-1" role="dialog" aria-labelledby="modalLabel"
      aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -76,7 +77,7 @@ $resultados = strlen($resultados) ? $resultados : '<tr><td colspan="7">Nenhum re
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form method="post">
+            <form id="saveProduct">
                 <div class="modal-body bg-light">
                     <div class="form-group mb-3">
                         <label for="descricao" class="font-weight-bold">Descrição</label>
@@ -114,6 +115,57 @@ $resultados = strlen($resultados) ? $resultados : '<tr><td colspan="7">Nenhum re
     </div>
 </div>
 
+<!-- Edit Product -->
+<div class="modal fade" id="modalEditProduct" tabindex="-1" role="dialog" aria-labelledby="modalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title" id="modalLabel">Adicionar Produto</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="updateProduct">
+
+                <input type="hidden" id="idProduct" name="idProduct">
+
+                <div class="modal-body bg-light">
+                    <div class="form-group mb-3">
+                        <label for="descricao" class="font-weight-bold">Descrição</label>
+                        <input type="text" name="descricao" id="descricao" class="form-control"
+                               placeholder="Ex: Tomate cereja"
+                               required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="preco" class="font-weight-bold">Preço (R$)</label>
+                        <input type="number" name="preco" step="0.01" id="preco" class="form-control"
+                               placeholder="Ex: 4.50"
+                               required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="unidade" class="font-weight-bold">Unidade</label>
+                        <select name="unidade" id="unidade" class="form-control" style="padding: 0 8px" id="unidade">
+                            <option value="kg">kg</option>
+                            <option value="g">g</option>
+                            <option value="un">un</option>
+                        </select>
+                    </div>
+                    <div class="form-group mb-0">
+                        <label for="estoque" class="font-weight-bold">Estoque</label>
+                        <input type="number" name="estoque" class="form-control" id="estoque" placeholder="Ex: 100"
+                               required>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light d-flex justify-content-center align-items-center">
+                    <button type="button" class="btn btn-outline-secondary w-50" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success w-50">Salvar Produto</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <div class="page-container login-area">
     <aside class="sidebar-menu bg-dark text-light">
         <div class="sidebar-header p-3">
@@ -145,7 +197,7 @@ $resultados = strlen($resultados) ? $resultados : '<tr><td colspan="7">Nenhum re
         </nav>
     </aside>
 
-    <div class="main-content-inner text-center">
+    <div class="main-content-inner text-center pt-5">
         <div class="d-flex justify-content-center">
             <div class="card w-100" style="max-width: 1000px;">
                 <div class="card-body">
@@ -164,14 +216,15 @@ $resultados = strlen($resultados) ? $resultados : '<tr><td colspan="7">Nenhum re
                                 </option>
                             </select>
                         </form>
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalAdicionarProduto">
+                        <button type="button" class="btn btn-primary" data-toggle="modal"
+                                data-target="#modalAdicionarProduto">
                             Adicionar Produto
                         </button>
                     </div>
 
                     <div class="single-table">
                         <div class="table-responsive">
-                            <table class="table text-center">
+                            <table class="table text-center" id="table_product">
                                 <thead class="text-uppercase bg-dark">
                                 <tr class="text-white">
                                     <th scope="col">Nome</th>

@@ -26,15 +26,15 @@
 
 <body>
 <?php
-include __DIR__ . '/../app/Entity/Usuario.php';
+    include __DIR__ . '/../app/Entity/Usuario.php';
 
-use App\Entity\Usuario;
+    use App\Entity\Usuario;
 
-session_start();
+    session_start();
 
-$user = $_SESSION['idUsuario'];
+    $user = $_SESSION['idUsuario'];
 
-$usuario = Usuario::getUsuario($user);
+    $usuario = Usuario::getUsuario($user);
 
 ?>
 
@@ -105,7 +105,7 @@ $usuario = Usuario::getUsuario($user);
                                 <h4>Alterar senha</h4>
                             </div>
                             <div class="card-body">
-                                <form action="alterarSenha.php" method="POST">
+                                <form id="editarSenha">
                                     <div class="form-group mb-3">
                                         <label for="senhaAtual">Senha atual</label>
                                         <input type="password" class="form-control" id="senhaAtual" name="senhaAtual"
@@ -137,9 +137,8 @@ $usuario = Usuario::getUsuario($user);
         </div>
     </div>
 
-    <!-- Scripts -->
-    <!-- jquery latest version -->
     <script src="assets/js/vendor/jquery-2.2.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- bootstrap 4 js -->
     <script src="assets/js/popper.min.js"></script>
     <script src="assets/js/bootstrap.min.js"></script>
@@ -151,6 +150,7 @@ $usuario = Usuario::getUsuario($user);
     <!-- others plugins -->
     <script src="assets/js/plugins.js"></script>
     <script src="assets/js/scripts.js"></script>
+    <script src="assets/js/crud.js"></script>
 
 </body>
 </html>
