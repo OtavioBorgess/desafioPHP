@@ -28,18 +28,20 @@
     include __DIR__ . '/../app/Db/Database.php';
 
     use App\Entity\Produto;
+    session_start();
+    $id = $_SESSION['idUsuario'];
 
     $filtro = $_GET['filtro'] ?? 'disponiveis';
 
     switch ($filtro) {
         case 'todos':
-            $produtos = array_filter(Produto::getBuscaProduto());
+            $produtos = array_filter(Produto::getBuscaProduto($id));
             break;
         case 'indisponiveis':
-            $produtos = array_filter(Produto::getBuscaProduto(), fn($p) => $p->estoque <= 0);
+            $produtos = array_filter(Produto::getBuscaProduto($id), fn($p) => $p->estoque <= 0);
             break;
         default:
-            $produtos = array_filter(Produto::getBuscaProduto(), fn($p) => $p->estoque > 0);
+            $produtos = array_filter(Produto::getBuscaProduto($id), fn($p) => $p->estoque > 0);
     }
 
     $resultados = '';
@@ -184,13 +186,8 @@
                     </ul>
                 </li>
                 <li><a href="viewListagemFeira.php" class="text-light d-block py-2">Feiras</a></li>
-                <li>
-                    <a href="#" aria-expanded="true" class="text-light d-block py-2">Produtos</a>
-                    <ul class="collapse list-unstyled ps-3">
-                        <li><a href="viewCadastroProduto.php" class="text-light">Cadastrar</a></li>
-                        <li><a href="viewListarProduto.php" class="text-light">Listar</a></li>
-                    </ul>
-                </li>
+                <li><a href="viewListarProduto.php" aria-expanded="true" class="text-light d-block py-2">Produtos</a>
+
                 <li><a href="#" class="text-light d-block py-2">Relatórios</a></li>
                 <li><a href="logout.php" class="text-light d-block py-2">Sair</a></li>
             </ul>

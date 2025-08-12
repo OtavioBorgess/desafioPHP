@@ -42,11 +42,8 @@
             return (new Database('produto'))->delete('id = ' . $this->id);
         }
 
-        public static function getBuscaProduto()
+        public static function getBuscaProduto($idUsuario)
         {
-            session_start();
-            $idUsuario = $_SESSION['idUsuario'];
-
             return (new Database('produto'))->select('idUsuario = ' . $idUsuario, 'descricao')
                 ->fetchAll(PDO::FETCH_CLASS, self::class);
         }

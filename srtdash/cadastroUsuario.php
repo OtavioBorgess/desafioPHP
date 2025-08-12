@@ -4,7 +4,7 @@
 
     use App\Entity\Usuario;
 
-    if (isset($_POST['nome'], $_POST['email'], $_POST['senha'], $_POST['perfil'])) {
+    if (isset($_POST['save_user'])) {
 
         $obUser = new Usuario;
         $obUser->nome = $_POST['nome'];
@@ -13,9 +13,13 @@
         $obUser->perfil = $_POST['perfil'];
         $obUser->cadastrar();
 
-        header("Location: index.php?status=success");
-        exit;
+        echo json_encode([
+            'status' => 'success',
+            'message' => 'Cadastro realizado com sucesso!'
+        ]);
+    } else {
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Erro ao realizar cadastro!'
+        ]);
     }
-
-    header("Location: index.php?status=error");
-    exit;

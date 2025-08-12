@@ -46,10 +46,8 @@
                 ]);
         }
 
-        public static function getEndereco()
+        public static function getEndereco($idUsuario)
         {
-            $idUsuario = $_SESSION['idUsuario'];
-
             return (new Database('endereco'))->select('idUsuario = ' . $idUsuario)
                 ->fetchObject(self::class);
         }

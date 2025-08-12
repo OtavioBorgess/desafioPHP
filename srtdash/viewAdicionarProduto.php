@@ -28,7 +28,11 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use App\Entity\Produto;
 
-$produtos = array_filter($produtos = Produto:: getBuscaProduto(), fn($p) => $p->estoque > 0);
+session_start();
+$id = $_SESSION['idUsuario'];
+
+$produtos = array_filter($produtos = Produto:: getBuscaProduto($id), fn($p) => $p->estoque > 0);
+
 
 $idProdutoSelecionado = $_GET['idProduto'] ?? '';
 $produtoSelecionado = $idProdutoSelecionado ? Produto::getProduto($idProdutoSelecionado) : null;

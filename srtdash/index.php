@@ -27,17 +27,8 @@
 <body>
 <div class="login-area">
     <div class="container">
-        <?php if (isset($_GET['status']) && $_GET['status'] === 'success'): ?>
-            <div class="alert alert-success text-center">
-                Cadastro realizado com sucesso!
-            </div>
-        <?php elseif (isset($_GET['status']) && $_GET['status'] === 'error'): ?>
-            <div class="alert alert-danger text-center">
-                Cadastro inválido!
-            </div>
-        <?php endif; ?>
         <div class="login-box">
-            <form action="verificarLogin.php" method="post">
+            <form id="verifyLogin">
                 <div class="login-form-head">
                     <h4>LOGIN</h4>
                 </div>
@@ -64,7 +55,7 @@
                         </div>
                     </div>
                     <div class="submit-btn-area">
-                        <button id="form_submit" type="submit">Entrar <i class="ti-arrow-right"></i></button>
+                        <button type="submit">Entrar</i></button>
                     </div>
                     <div class="form-footer text-center mt-5">
                         <p class="text-muted">Não possui uma conta? <a href="viewCadastroUsuario.php">Cadastrar-se</a>
@@ -75,22 +66,20 @@
         </div>
     </div>
 </div>
-<!-- login area end -->
 
-<!-- jquery latest version -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jQuery-slimScroll/1.3.8/jquery.slimscroll.min.js"></script>
-<!-- bootstrap 4 js -->
+<script src="assets/js/vendor/jquery-2.2.4.min.js"></script>
 <script src="assets/js/popper.min.js"></script>
 <script src="assets/js/bootstrap.min.js"></script>
 <script src="assets/js/owl.carousel.min.js"></script>
-
+<script src="assets/js/metisMenu.min.js"></script>
+<script src="assets/js/jquery.slimscroll.min.js"></script>
 <script src="assets/js/jquery.slicknav.min.js"></script>
 
-<!-- others plugins -->
 <script src="assets/js/plugins.js"></script>
-<script src="assets/js/metisMenu.min.js"></script>
 <script src="assets/js/scripts.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="assets/js/crud.js"></script>
 </body>
 
 </html>

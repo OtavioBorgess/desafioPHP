@@ -30,10 +30,11 @@ class ProdutoFeira
 
     public function atualizar()
     {
+
         return (new Database('produto_feira'))
             ->update('id = ' . $this->id . ' AND ' . ' idFeira = ' . $this->idFeira . ' AND ' . ' idProduto = ' . $this->idProduto, [
                 'preco' => $this->preco,
-                'quantidade' => $this->quantidade,
+                'quantidade' => (int)$this->quantidade,
             ]);
     }
 

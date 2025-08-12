@@ -1,44 +1,58 @@
 <?php
 
-require __DIR__ . '/../vendor/autoload.php';
+    require __DIR__ . '/../vendor/autoload.php';
 
-use App\Entity\ProdutoFeira;
-use App\Entity\Produto;
+    use App\Entity\ProdutoFeira;
+    use App\Entity\Produto;
 
-if (!isset($_POST['id']) or !is_numeric($_POST['id'])) {
-    header('location: viewEditarProdutoFeira.php?status=error');
-    exit;
-}
+    if (!isset($_POST['idProductFeira']) or !is_numeric($_POST['idProductFeira'])) {
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'ID inválido'
+        ]);
+        exit;
+    }
 
-$obProd = ProdutoFeira::getProdutoFeiraPorId($_POST['id']);
+    $obProd = ProdutoFeira::getProdutoFeiraPorId($_POST['idProductFeira']);
 
-if (!$obProd instanceof ProdutoFeira) {
-    header('location: viewEditarProdutoFeira.php?status=error');
-    exit;
-}
+    if (!$obProd instanceof ProdutoFeira) {
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Produto não encontrado'
+        ]);
+        exit;
+    }
 
-if (isset($_POST['idFeira'], $_POST['idProduto'], $_POST['preco'], $_POST['quantidade'])) {
-    $obProd->idFeira = $_POST['idFeira'];
-    $obProd->idProduto = $_POST['idProduto'];
-    $obProd->preco = $_POST['preco'];
+    if (isset($_POST['editIdFeira'], $_POST['idProductFeira'], $_POST['editPreco'], $_POST['editQuantidade'])) {
+        $obProd->idFeira = $_POST['editIdFeira'];
+        $obProd->idProduto = $_POST['idProductFeira'];
+        $obProd->preco = $_POST['editPreco'];
 
-    if ($_POST['quantidade'] != $obProd->quantidade) {
-        $novaQuantidade = $_POST['quantidade'];
-        $quantidadeAntiga = $obProd->quantidade;
-        $diferenca = $novaQuantidade - $quantidadeAntiga;
+        if ($_POST['editQuantidade'] != $obProd->quantidade) {
+            $novaQuantidade = $_POST['editQuantidade'];
+            $quantidadeAntiga = $obProd->quantidade;
+            $diferenca = $novaQuantidade - $quantidadeAntiga;
 
-        $obProd->quantidade = $novaQuantidade;
+            $obProd->quantidade = $novaQuantidade;
 
-        $produto = Produto::getProduto($obProd->idProduto);
-        if ($produto instanceof Produto) {
-            if($diferenca > $produto->estoque){
-                die('quantidade insuficiente');
+            $produto = Produto::getProduto($obProd->idProduto);
+            if ($produto instanceof Produto) {
+                if ($diferenca > $produto->estoque) {
+                    echo json_encode([
+                        'status' => 'error',
+                        'message' => 'Estoque insuficiente'
+                    ]);
+                    exit;
+                }
+                $produto->estoque -= $diferenca;
+                $produto->atualizar();
+
             }
-            $produto->estoque -= $diferenca;
-            $produto->atualizar();
+            $obProd->atualizar();
+            echo json_encode([
+                'status' => 'success',
+                'message' => 'Produto atualizado com sucesso'
+            ]);
+            exit;
         }
     }
-    $obProd->atualizar();
-}
-header('location: listarProdutoFeira.php?status=success&idFeira=' . $obProd->idFeira);
-exit;

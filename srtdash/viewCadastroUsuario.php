@@ -29,7 +29,7 @@
     <div class="container">
         <div class="login-box ptb--100">
 
-            <form action="cadastroUsuario.php" method="post">
+            <form id="saveUser">
                 <div class="login-form-head">
                     <h4>Inscrever-se</h4>
                 </div>
@@ -70,11 +70,7 @@
         </div>
     </div>
 </div>
-<!-- login area end -->
-
-<!-- jquery latest version -->
 <script src="assets/js/vendor/jquery-2.2.4.min.js"></script>
-<!-- bootstrap 4 js -->
 <script src="assets/js/popper.min.js"></script>
 <script src="assets/js/bootstrap.min.js"></script>
 <script src="assets/js/owl.carousel.min.js"></script>
@@ -82,9 +78,11 @@
 <script src="assets/js/jquery.slimscroll.min.js"></script>
 <script src="assets/js/jquery.slicknav.min.js"></script>
 
-<!-- others plugins -->
 <script src="assets/js/plugins.js"></script>
 <script src="assets/js/scripts.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="assets/js/crud.js"></script>
 </body>
 
 </html>

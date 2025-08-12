@@ -4,10 +4,12 @@
     use App\Entity\Usuario;
     use App\Entity\Endereco;
 
+    header('Content-type: application/json');
+
     session_start();
     $idUsuario = $_SESSION['idUsuario'];
 
-    if (isset($_POST['nome'], $_POST['email'], $_POST['telefone'], $_POST['rua'], $_POST['numero'], $_POST['complemento'], $_POST['bairro'], $_POST['cep'], $_POST['cidade'], $_POST['estado'])) {
+    if (isset($_POST['update_perfil'])) {
 
         $user = Usuario::getUsuario($idUsuario);
         $user->nome = $_POST['nome'];
@@ -15,10 +17,10 @@
         $user->telefone = $_POST['telefone'];
         $user->editar();
 
-        $end = Endereco::getEndereco();
+        $end = Endereco::getEndereco($idUsuario);
         if (!$end) {
             $end = new Endereco();
-            $end->idUsuario = $_SESSION['idUsuario'];
+            $end->idUsuario = $idUsuario;
         }
 
         $end->rua = $_POST['rua'];
@@ -30,10 +32,14 @@
         $end->estado = $_POST['estado'];
 
         $end->id ? $end->atualizar() : $end->cadastrar();
-
-        echo "<script>alert('Perfil editado com sucesso.'); window.location.href = 'viewEditarPerfilProdutor.php?status=success';</script>";
-        exit;
+        echo json_encode([
+            'status' => 'success',
+            'message' => 'Perfil atualizado com sucesso!'
+        ]);
     } else {
-        echo "<script>alert('Erro ao editar o perfil.'); window.location.href = 'viewEditarPerfilProdutor.php?status=error';</script>";
-        exit;
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Erro ao atualizar perfil!'
+        ]);
     }
+    exit;

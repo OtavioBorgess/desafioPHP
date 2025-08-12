@@ -1,21 +1,29 @@
 <?php
-require __DIR__ . '/../vendor/autoload.php';
+    require __DIR__ . '/../vendor/autoload.php';
 
-session_start();
+    header('Content-type: application/json');
 
-use App\Entity\Usuario;
+    session_start();
 
-$usuario = Usuario::login($_POST['email']);
+    use App\Entity\Usuario;
 
-if ($usuario && password_verify($_POST['senha'], $usuario->senha)) {
-    $_SESSION['idUsuario'] = $usuario->id;
+    $usuario = Usuario::login($_POST['email']);
 
     if ($usuario && password_verify($_POST['senha'], $usuario->senha)) {
         $_SESSION['idUsuario'] = $usuario->id;
-        header("Location: painel.php?status=success");
-        exit;
-    }
-} else {
-    echo "<script>alert('Credenciais incorretas!'); window.location.href = 'index.php?status=error';</script>";
-    exit;
-}
+
+        if ($usuario && password_verify($_POST['senha'], $usuario->senha)) {
+            $_SESSION['idUsuario'] = $usuario->id;
+
+            echo json_encode([
+                'status' => 'success',
+                'message' => 'Login efetuado com sucesso'
+            ]);
+            exit;
+        }
+    } else {
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Credenciais incorretas'
+        ]);
+    }     exit;

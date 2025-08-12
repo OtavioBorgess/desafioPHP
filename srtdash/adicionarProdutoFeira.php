@@ -22,7 +22,7 @@
         exit;
     }
 
-    if (isset($_POST['save_produt'])) {
+    if (isset($_POST['addProductFeira'])) {
         $produto->estoque -= $_POST['quantidade'];
         $produto->atualizar();
 
@@ -37,11 +37,9 @@
             'status' => 'success',
             'message' => 'Produto adicionado com sucesso.'
         ]);
-        exit;
     } else {
         echo json_encode([
             'status' => 'error',
             'message' => 'Erro ao adicionar produto.'
         ]);
-        exit;
     }
