@@ -28,13 +28,11 @@
         $obProd->idProduto = $_POST['idEditProduto'];
         $obProd->preco = $_POST['editPreco'];
 
-        if ($_POST['editQuantidade'] != $obProd->quantidade) {
-            $novaQuantidade = $_POST['editQuantidade'];
-            $quantidadeAntiga = $obProd->quantidade;
-            $diferenca = $novaQuantidade - $quantidadeAntiga;
+        $novaQuantidade = $_POST['editQuantidade'];
+        $quantidadeAntiga = $obProd->quantidade;
+        $diferenca = $novaQuantidade - $quantidadeAntiga;
 
-            $obProd->quantidade = $novaQuantidade;
-
+        if ($novaQuantidade != $quantidadeAntiga) {
             $produto = Produto::getProduto($obProd->idProduto);
             if ($produto instanceof Produto) {
                 if ($diferenca > $produto->estoque) {
@@ -47,11 +45,13 @@
                 $produto->estoque -= $diferenca;
                 $produto->atualizar();
             }
-            $obProd->atualizar();
-            echo json_encode([
-                'status' => 'success',
-                'message' => 'Produto atualizado com sucesso'
-            ]);
-            exit;
+            $obProd->quantidade = $novaQuantidade;
         }
+        $obProd->atualizar();
+
+        echo json_encode([
+            'status' => 'success',
+            'message' => 'Produto atualizado com sucesso'
+        ]);
+        exit;
     }

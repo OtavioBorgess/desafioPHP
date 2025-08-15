@@ -123,15 +123,16 @@
                     <div class="row">
                         <div class="col-md-4 mb-3">
                             <label for="preco" class="form-label">Preço</label>
-                            <input type="number" name="preco" id="preco" class="form-control" min="1" required>
+                            <input type="number" name="preco" id="preco" class="form-control" step="0.01" min="1"
+                                   required>
                         </div>
                         <div class="col-md-4 mb-3">
                             <label for="unidade" class="form-label">Unidade</label>
-                            <input type="text" name="unidade" id="unidade" class="form-control" readonly>
+                            <input type="text" name="unidade" id="unidade" class="form-control" disabled>
                         </div>
                         <div class="col-md-4 mb-3">
                             <label for="estoque" class="form-label">Estoque</label>
-                            <input type="number" name="estoque" id="estoque" class="form-control" readonly>
+                            <input type="number" name="estoque" id="estoque" class="form-control" disabled>
                         </div>
                     </div>
 
@@ -157,13 +158,15 @@
         <div class="modal-content border-0 shadow">
             <div class="modal-header bg-dark text-white">
                 <h5 class="modal-title" id="modalLabel">Produtos da Feira</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Fechar"></button>
             </div>
             <input type="hidden" id="idFeira" name="idFeira">
 
             <div class="modal-body bg-light">
                 <div class="table-responsive">
-                    <table class="table table-hover table-striped table-bordered align-middle shadow-sm" id="tableViewProduct">
+                    <table class="table table-hover table-striped table-bordered align-middle shadow-sm"
+                           id="tableViewProduct">
                         <thead class="table-dark text-center">
                         <tr>
                             <th>Descrição</th>
@@ -174,22 +177,31 @@
                         </tr>
                         </thead>
                         <tbody class="text-center">
-                        <?php foreach ($produtosFeira as $prodFeira): ?>
+                        <?php if (count($produtosFeira) > 0): ?>
+                            <?php foreach ($produtosFeira as $prodFeira): ?>
+                                <tr>
+                                    <td><?= htmlspecialchars($prodFeira->descricao) ?></td>
+                                    <td>R$ <?= number_format($prodFeira->preco, 2, ',', '.') ?></td>
+                                    <td><?= htmlspecialchars($prodFeira->unidade) ?></td>
+                                    <td><?= $prodFeira->quantidade ?></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-warning btnEditProductFeira"
+                                                value="<?= $prodFeira->id ?>" title="Editar">
+                                            <i class="fa fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-danger"
+                                                onclick="delProductFeira(<?= $prodFeira->id ?>, <?= "'$prodFeira->descricao'" ?>)"
+                                                title="Excluir">
+                                            <i class="fa fa-trash-o"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
                             <tr>
-                                <td><?= $prodFeira->descricao ?></td>
-                                <td>R$ <?= number_format($prodFeira->preco, 2, ',', '.') ?></td>
-                                <td><?= $prodFeira->unidade ?></td>
-                                <td><?= $prodFeira->quantidade ?></td>
-                                <td>
-                                    <button class="btn btn-sm btn-warning btnEditProductFeira" value="<?= $prodFeira->id ?>" title="Editar">
-                                        <i class="fa fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-danger" onclick="delProductFeira(<?= $prodFeira->id ?>, <?= "'$prodFeira->descricao'" ?>)" title="Excluir">
-                                        <i class="fa fa-trash-o"></i>
-                                    </button>
-                                </td>
+                                <td colspan="5" class="text-center bg-info">Nenhum produto encontrado.</td>
                             </tr>
-                        <?php endforeach; ?>
+                        <?php endif; ?>
                         </tbody>
                     </table>
                 </div>
@@ -202,14 +214,14 @@
     </div>
 </div>
 
-
 <!--UPDATE PRODUCT FEIRA-->
 <div class="modal fade" id="modalEditProductFeira" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content border-0 shadow">
             <div class="modal-header bg-dark text-white">
                 <h5 class="modal-title" id="modalLabel">Editar Produto da Feira</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Fechar"></button>
             </div>
 
             <form id="updateProductFeira">
@@ -220,32 +232,38 @@
                 <div class="modal-body bg-light">
                     <div class="mb-3">
                         <label for="editDescricao" class="form-label fw-bold">Produto</label>
-                        <input type="text" id="editDescricao" name="editDescricao" class="form-control" disabled required>
+                        <input type="text" id="editDescricao" name="editDescricao" class="form-control" disabled
+                               required>
                     </div>
 
                     <div class="row">
                         <div class="col-md-4 mb-3">
                             <label for="editPreco" class="form-label fw-bold">Preço</label>
-                            <input type="number" name="editPreco" id="editPreco" class="form-control" min="1" required>
+                            <input type="number" name="editPreco" id="editPreco" step="0.01" class="form-control"
+                                   min="1" required>
                         </div>
                         <div class="col-md-4 mb-3">
                             <label for="editUnidade" class="form-label fw-bold">Unidade</label>
-                            <input type="text" name="editUnidade" id="editUnidade" class="form-control" readonly disabled>
+                            <input type="text" name="editUnidade" id="editUnidade" class="form-control" readonly
+                                   disabled>
                         </div>
                         <div class="col-md-4 mb-3">
                             <label for="editEstoque" class="form-label fw-bold">Estoque</label>
-                            <input type="number" name="editEstoque" id="editEstoque" class="form-control" readonly disabled>
+                            <input type="number" name="editEstoque" id="editEstoque" class="form-control" readonly
+                                   disabled>
                         </div>
                     </div>
 
                     <div class="mb-0">
                         <label for="editQuantidade" class="form-label fw-bold">Quantidade para a Feira</label>
-                        <input type="number" name="editQuantidade" id="editQuantidade" class="form-control" min="1" required>
+                        <input type="number" name="editQuantidade" id="editQuantidade" class="form-control" min="1"
+                               required>
                     </div>
                 </div>
 
                 <div class="modal-footer bg-light d-flex justify-content-between">
-                    <button type="button" class="btn btn-outline-secondary w-45" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-outline-secondary w-45" data-bs-dismiss="modal">Cancelar
+                    </button>
                     <button type="submit" class="btn btn-dark w-45">Salvar Produto</button>
                 </div>
             </form>
@@ -265,7 +283,8 @@
         <nav class="main-menu">
             <ul class="metismenu" id="menu">
                 <li>
-                    <a href="#perfilMenu" class="text-light d-block py-2" data-bs-toggle="collapse" aria-expanded="false">
+                    <a href="#perfilMenu" class="text-light d-block py-2" data-bs-toggle="collapse"
+                       aria-expanded="false">
                         Perfil <i class="bi bi-chevron-down"></i>
                     </a>
                     <ul class="collapse list-unstyled ps-4" id="perfilMenu">
@@ -292,7 +311,8 @@
             <nav class="main-menu">
                 <ul class="metismenu" id="menu">
                     <li>
-                        <a href="#perfilMenu" class="text-light d-block py-2" data-bs-toggle="collapse" aria-expanded="false">
+                        <a href="#perfilMenu" class="text-light d-block py-2" data-bs-toggle="collapse"
+                           aria-expanded="false">
                             Perfil <i class="bi bi-chevron-down"></i>
                         </a>
                         <ul class="collapse list-unstyled ps-4" id="perfilMenu">
@@ -318,10 +338,12 @@
                         <div class="d-flex align-items-center mb-3">
                             <label for="filtro" class="me-2 fw-bold">Filtrar:</label>
                             <form method="get">
-                                <select name="filtro" id="filtro" class="form-select" onchange="this.form.submit()" style="width: 120px;">
+                                <select name="filtro" id="filtro" class="form-select" onchange="this.form.submit()"
+                                        style="width: 120px;">
                                     <option value="todas" <?= $filtro === 'todas' ? 'selected' : '' ?>>Todas</option>
                                     <option value="ativa" <?= $filtro === 'ativa' ? 'selected' : '' ?>>Ativas</option>
-                                    <option value="inativa" <?= $filtro === 'inativa' ? 'selected' : '' ?>>Inativas</option>
+                                    <option value="inativa" <?= $filtro === 'inativa' ? 'selected' : '' ?>>Inativas
+                                    </option>
                                 </select>
                             </form>
                         </div>

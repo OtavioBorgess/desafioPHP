@@ -1,4 +1,9 @@
 //CRUD PRODUCT
+$(document).ready(function () {
+    $('#cep').mask('00000-000');
+    $('#telefone').mask('(00) 00000-0000');
+});
+
 $(document).on('submit', '#saveProduct', function (e) {
     e.preventDefault();
 
@@ -369,6 +374,7 @@ $(document).on('submit', '#addProductFeira', function (e) {
                 }).then(() => {
                     $('#tableViewProduct').load(' #tableViewProduct');
                     $('#modalAddProductFeira').modal('hide');
+                    $('#addProductFeira')[0].reset();
                     $('#modalViewProductFeira').modal('show');
                 });
             } else {
@@ -628,3 +634,39 @@ $(document).on('submit', '#updateItem', function (e) {
         }
     });
 });
+
+$('#cep').blur(function () {
+
+    const cep = $(this).val();
+
+    if (cep.length !== 9) {
+        Swal.fire({
+            icon: "error",
+            title: 'CEP inválido.',
+            showConfirmButton: false,
+            timer: 1500,
+        });
+        return;
+    }
+
+    $.ajax({
+        method: 'GET',
+        url: "https://viacep.com.br/ws/" + $(this).val() + "/json/?callback=?",
+        dataType: 'json',
+        success: function (res) {
+            if (res.erro) {
+                Swal.fire({
+                    icon: "error",
+                    title: 'CEP não encontrado!',
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+                return;
+            }
+            $('#bairro').val(res.bairro)
+            $('#cidade').val(res.localidade)
+            $('#rua').val(res.logradouro)
+            $('#estado').val(res.uf)
+        }
+    });
+})

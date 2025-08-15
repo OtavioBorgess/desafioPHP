@@ -53,11 +53,21 @@
         $idsAdicionados = [];
         if ($pedido) {
             $itens = ItemPedido::getItensPorPedido($pedido->id);
-            $idsAdicionados = array_map(fn($item) => $item->idProdutoFeira, $itens);
+            $idsAdicionados = array_map(fn($item) => $item->idProdutoFeira . '-' . $idFeiraSelecionada, $itens);
         }
 
-        $produtosFeira = array_filter($todosProdutos, function ($p) use ($idsAdicionados) {
-            return $p->quantidade > 0 && !in_array($p->id, $idsAdicionados);
+        $produtosFeira = array_filter($todosProdutos, function ($p) use ($idsAdicionados, $filtro, $idFeiraSelecionada) {
+            $chaveProdutoFeira = $p->id . '-' . $idFeiraSelecionada;
+
+            if (in_array($chaveProdutoFeira, $idsAdicionados)) {
+                return false;
+            }
+            if ($filtro === 'disponivel') {
+                return $p->quantidade > 0;
+            } elseif ($filtro === 'indisponiveis') {
+                return $p->quantidade <= 0;
+            }
+            return true;
         });
     }
 
@@ -96,10 +106,13 @@
         <nav class="main-menu">
             <ul class="metismenu" id="menu">
                 <li>
-                    <a href="#" aria-expanded="true" class="text-light d-block py-2">Perfil</a>
-                    <ul class="collapse list-unstyled ps-4">
-                        <li><a href="viewEditarPerfil.php" class="text-light">Editar</a></li>
-                        <li><a href="viewAlterarSenha.php" class="text-light">Alterar senha</a></li>
+                    <a href="#perfilMenu" class="text-light d-block py-2" data-bs-toggle="collapse"
+                       aria-expanded="false">
+                        Perfil <i class="bi bi-chevron-down"></i>
+                    </a>
+                    <ul class="collapse list-unstyled ps-4" id="perfilMenu">
+                        <li><a href="viewEditarPerfil.php" class="text-light py-1 d-block">Editar</a></li>
+                        <li><a href="viewAlterarSenha.php" class="text-light py-1 d-block">Alterar senha</a></li>
                     </ul>
                 </li>
                 <li><a href="viewListagemFeira.php" class="text-light d-block py-2">Feiras</a></li>
@@ -119,11 +132,15 @@
                         <div class="d-flex align-items-center mb-3">
                             <label for="filtro" class="me-2 fw-bold">Filtrar:</label>
                             <form method="get">
+                                <input type="hidden" name="idFeira" value="<?= ($idFeiraSelecionada) ?>">
                                 <select name="filtro" id="filtro" class="form-select" onchange="this.form.submit()"
-                                        style="width: 120px;">
-                                    <option value="todas" <?= $filtro === 'todas' ? 'selected' : '' ?>>Todas</option>
-                                    <option value="ativa" <?= $filtro === 'ativa' ? 'selected' : '' ?>>Ativas</option>
-                                    <option value="inativa" <?= $filtro === 'inativa' ? 'selected' : '' ?>>Inativas
+                                        style="width: 150px;">
+                                    <option value="todos" <?= $filtro === 'todas' ? 'selected' : '' ?>>Todos</option>
+                                    <option value="disponivel" <?= $filtro === 'disponivel' ? 'selected' : '' ?>>
+                                        Disponível
+                                    </option>
+                                    <option value="indisponiveis" <?= $filtro === 'indisponiveis' ? 'selected' : '' ?>>
+                                        Indisponível
                                     </option>
                                 </select>
                             </form>
