@@ -111,7 +111,7 @@ function delProduto(id, p_name) {
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
-        confirmButtonText: "Sim, apagar!",
+        confirmButtonText: "Apagar!",
         cancelButtonText: "Cancelar"
     }).then((result) => {
         if (result.isConfirmed) {
@@ -333,6 +333,7 @@ $(document).on('change', '#idProduto', function (e) {
                 $('#preco').val(res.preco);
                 $('#unidade').val(res.unidade);
                 $('#estoque').val(res.estoque);
+                $('#quantidade').attr('max', res.estoque);
             } else {
                 Swal.fire({
                     icon: "error",
@@ -420,11 +421,12 @@ $(document).on('click', '.btnEditProductFeira', function () {
         success: function (res) {
             if (res.status === 'success') {
                 $('#idProductFeira').val(res.id);
+                $('#idEditProduto').val(res.idProduto);
                 $('#editIdFeira').val(res.idFeira);
                 $('#editDescricao').val(res.descricao);
                 $('#editPreco').val(res.preco);
                 $('#editUnidade').val(res.unidade);
-                $('#editQuantidade').val(res.quantidade).attr('max', '#editEstoque');
+                $('#editQuantidade').val(res.quantidade).attr('max', res.estoque + res.quantidade);
                 $('#editEstoque').val(res.estoque);
                 $('#modalEditProductFeira').modal('show');
             } else {
@@ -515,3 +517,114 @@ function delProductFeira(prodFeira_id, descricao) {
         }
     });
 }
+
+//REMOVER ITEMPEDIDO DA CESTA
+function delItemPedido(item_id, descricao) {
+    Swal.fire({
+        icon: "warning",
+        text: `Remover o produto (${descricao}) da sua cesta?`,
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Remover",
+        cancelButtonText: "Cancelar"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: "removerItemPedido.php",
+                type: "POST",
+                data: {item_id: item_id},
+                dataType: "json",
+                success: function (res) {
+                    if (res.status === 'success') {
+                        Swal.fire({
+                            icon: "success",
+                            title: res.message,
+                            timer: 1500,
+                            showConfirmButton: false
+                        }).then(() => {
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: res.message,
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                    }
+                }
+            });
+        }
+    });
+}
+
+//EDIT ITEMPEDIDO
+$(document).on('click', '.btnEditItem', function () {
+
+    const idItem = $(this).val();
+
+    $.ajax({
+        method: 'POST',
+        url: 'getItem.php',
+        data: {
+            idItem: idItem
+        },
+        dataType: 'json',
+        success: function (res) {
+            if (res.status === 'success') {
+                $('#editItem_id').val(res.id);
+                $('#editItem_descricao').val(res.descricao);
+                $('#editItem_prodQuantidade').val(res.prodQuantidade);
+                $('#editItem_itemQuantidade').val(res.itemQuantidade).attr('max', res.prodQuantidade + res.itemQuantidade);
+                $('#editItem_Unidade').text(`(${res.unidade})`);
+                $('#editItemPreco').val(res.preco);
+
+                $("#modalEditItem").modal('show');
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: res.message,
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+            }
+        }
+    });
+});
+
+$(document).on('submit', '#updateItem', function (e) {
+    e.preventDefault();
+
+    const formData = new FormData(this);
+    formData.append("update_item", "true");
+
+    $.ajax({
+        method: 'POST',
+        url: 'editarItemPedido.php',
+        data: formData,
+        dataType: 'json',
+        contentType: false,
+        processData: false,
+        success: function (res) {
+            if (res.status === 'success') {
+                Swal.fire({
+                    icon: "success",
+                    title: res.message,
+                    showConfirmButton: false,
+                    timer: 1500,
+                }).then(() => {
+                    $('#table_item').load(' #table_item');
+                    $('#modalEditItem').modal('hide');
+                });
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: res.message,
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+            }
+        }
+    });
+});

@@ -23,9 +23,9 @@
         exit;
     }
 
-    if (isset($_POST['editIdFeira'], $_POST['idProductFeira'], $_POST['editPreco'], $_POST['editQuantidade'])) {
+    if (isset($_POST['editIdFeira'], $_POST['idEditProduto'], $_POST['editPreco'], $_POST['editQuantidade'])) {
         $obProd->idFeira = $_POST['editIdFeira'];
-        $obProd->idProduto = $_POST['idProductFeira'];
+        $obProd->idProduto = $_POST['idEditProduto'];
         $obProd->preco = $_POST['editPreco'];
 
         if ($_POST['editQuantidade'] != $obProd->quantidade) {
@@ -46,7 +46,6 @@
                 }
                 $produto->estoque -= $diferenca;
                 $produto->atualizar();
-
             }
             $obProd->atualizar();
             echo json_encode([

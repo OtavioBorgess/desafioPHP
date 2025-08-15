@@ -19,6 +19,7 @@
             'status' => 'success',
             'message' => 'Produto encontrado',
             'id' => $obProdFeira->id,
+            'idProduto' => $obProdFeira->idProduto,
             'idFeira' => $obProdFeira->idFeira,
             'descricao' => $obProdFeira->descricao,
             'preco' => $obProdFeira->preco,

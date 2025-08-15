@@ -29,6 +29,11 @@ require __DIR__ . '/../vendor/autoload.php';
 use App\Entity\Produto;
 
 session_start();
+    if (!isset($_SESSION['idUsuario'])) {
+        header('Location: index.php');
+        exit;
+    }
+
 $id = $_SESSION['idUsuario'];
 
 $produtos = array_filter($produtos = Produto:: getBuscaProduto($id), fn($p) => $p->estoque > 0);
@@ -40,29 +45,26 @@ $produtoSelecionado = $idProdutoSelecionado ? Produto::getProduto($idProdutoSele
 
 <div class="page-container login-area">
     <aside class="sidebar-menu bg-dark text-light">
-        <div class="sidebar-header p-3">
+        <div class="sidebar-header bg-dark">
             <a href="painel.php" class="text-light text-decoration-none">
                 <h2>AgriFood</h2>
                 <small>Produtor</small>
             </a>
         </div>
-        <nav class="main-menu p-3">
+        <nav class="main-menu">
             <ul class="metismenu" id="menu">
                 <li>
-                    <a href="#" aria-expanded="true" class="text-light d-block py-2">Perfil</a>
-                    <ul class="collapse list-unstyled ps-3">
-                        <li><a href="viewEditarPerfil.php" class="text-light">Editar</a></li>
-                        <li><a href="viewAlterarSenha.php" class="text-light">Alterar senha</a></li>
+                    <a href="#perfilMenu" class="text-light d-block py-2" data-bs-toggle="collapse" aria-expanded="false">
+                        Perfil <i class="bi bi-chevron-down"></i>
+                    </a>
+                    <ul class="collapse list-unstyled ps-4" id="perfilMenu">
+                        <li><a href="viewEditarPerfil.php" class="text-light py-1 d-block">Editar</a></li>
+                        <li><a href="viewAlterarSenha.php" class="text-light py-1 d-block">Alterar senha</a></li>
                     </ul>
                 </li>
                 <li><a href="viewListagemFeira.php" class="text-light d-block py-2">Feiras</a></li>
-                <li>
-                    <a href="#" aria-expanded="true" class="text-light d-block py-2">Produtos</a>
-                    <ul class="collapse list-unstyled ps-3">
-                        <li><a href="viewCadastroProduto.php" class="text-light">Cadastrar</a></li>
-                        <li><a href="viewListarProduto.php" class="text-light">Listar</a></li>
-                    </ul>
-                </li>
+                <li><a href="viewListarProduto.php" aria-expanded="true"
+                       class="text-light d-block py-2">Produtos</a>
                 <li><a href="#" class="text-light d-block py-2">Relatórios</a></li>
                 <li><a href="logout.php" class="text-light d-block py-2">Sair</a></li>
             </ul>

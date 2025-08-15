@@ -2,22 +2,19 @@
 <html class="no-js" lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Table Basic - srtdash</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listagem Produto</title>
     <link rel="shortcut icon" type="image/png" href="assets/images/icon/favicon.ico">
-    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/font-awesome.min.css">
     <link rel="stylesheet" href="assets/css/themify-icons.css">
-    <link rel="stylesheet" href="assets/css/metisMenu.css">
     <link rel="stylesheet" href="assets/css/owl.carousel.min.css">
     <link rel="stylesheet" href="assets/css/slicknav.min.css">
     <link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all"/>
     <link rel="stylesheet" href="assets/css/typography.css">
     <link rel="stylesheet" href="assets/css/default-css.css">
     <link rel="stylesheet" href="assets/css/styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="assets/css/responsive.css">
     <script src="assets/js/vendor/modernizr-2.8.3.min.js"></script>
 </head>
@@ -29,6 +26,12 @@
 
     use App\Entity\Produto;
     session_start();
+
+    if (!isset($_SESSION['idUsuario'])) {
+        header('Location: index.php');
+        exit;
+    }
+
     $id = $_SESSION['idUsuario'];
 
     $filtro = $_GET['filtro'] ?? 'disponiveis';
@@ -69,48 +72,44 @@
 
 <body>
 <!-- Added Product -->
-<div class="modal fade" id="modalAdicionarProduto" tabindex="-1" role="dialog" aria-labelledby="modalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+<div class="modal fade" id="modalAdicionarProduto" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content border-0 shadow">
-            <div class="modal-header bg-primary text-white">
+            <div class="modal-header bg-dark text-white">
                 <h5 class="modal-title" id="modalLabel">Adicionar Produto</h5>
-                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Fechar">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
             </div>
+
             <form id="saveProduct">
                 <div class="modal-body bg-light">
-                    <div class="form-group mb-3">
-                        <label for="descricao" class="font-weight-bold">Descrição</label>
-                        <input type="text" name="descricao" class="form-control" placeholder="Ex: Tomate cereja"
-                               required>
+                    <div class="mb-3">
+                        <label for="descricao" class="form-label fw-bold">Descrição</label>
+                        <input type="text" name="descricao" class="form-control" placeholder="Ex: Tomate cereja" required>
                     </div>
-                    <div class="form-group mb-3">
-                        <label for="preco" class="font-weight-bold">Preço (R$)</label>
-                        <input type="number" name="preco" step="0.01" class="form-control" placeholder="Ex: 4.50"
-                               required>
+
+                    <div class="mb-3">
+                        <label for="preco" class="form-label fw-bold">Preço (R$)</label>
+                        <input type="number" name="preco" step="0.01" class="form-control" min="1" placeholder="Ex: 4.50" required>
                     </div>
-                    <div class="form-group mb-3">
-                        <label for="unidade" class="font-weight-bold">Unidade</label>
-                        <select name="unidade" id="unidade" class="form-control" style="padding: 0 8px">
+
+                    <div class="mb-3">
+                        <label for="unidade" class="form-label fw-bold">Unidade</label>
+                        <select name="unidade" class="form-select">
                             <option value="kg">kg</option>
                             <option value="g">g</option>
                             <option value="un">un</option>
                         </select>
                     </div>
-                    <div class="form-group mb-0">
-                        <label for="estoque" class="font-weight-bold">Estoque</label>
-                        <input type="number" name="estoque" class="form-control" placeholder="Ex: 100" required>
+
+                    <div class="mb-0">
+                        <label for="estoque" class="form-label fw-bold">Estoque</label>
+                        <input type="number" name="estoque" class="form-control" min="0" placeholder="Ex: 100" required>
                     </div>
                 </div>
-                <div class="modal-footer bg-light d-flex justify-content-center align-items-center">
-                    <button type="submit" class="btn btn-success w-50">
-                        <i class="fa fa-check mr-1"></i>Salvar Produto
-                    </button>
-                    <button type="button" class="btn btn-outline-secondary w-50" data-dismiss="modal">
-                        <i class="fa fa-times mr-1"></i>Cancelar
-                    </button>
+
+                <div class="modal-footer bg-light d-flex justify-content-between">
+                    <button type="button" class="btn btn-outline-secondary w-45" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success w-45">Salvar Produto</button>
                 </div>
             </form>
         </div>
@@ -118,50 +117,46 @@
 </div>
 
 <!-- Edit Product -->
-<div class="modal fade" id="modalEditProduct" tabindex="-1" role="dialog" aria-labelledby="modalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+<div class="modal fade" id="modalEditProduct" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content border-0 shadow">
             <div class="modal-header bg-dark text-white">
-                <h5 class="modal-title" id="modalLabel">Adicionar Produto</h5>
-                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Fechar">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <h5 class="modal-title" id="modalLabel">Editar Produto</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
             </div>
-            <form id="updateProduct">
 
+            <form id="updateProduct">
                 <input type="hidden" id="idProduct" name="idProduct">
 
                 <div class="modal-body bg-light">
-                    <div class="form-group mb-3">
-                        <label for="descricao" class="font-weight-bold">Descrição</label>
+                    <div class="mb-3">
+                        <label for="descricao" class="form-label fw-bold">Descrição</label>
                         <input type="text" name="descricao" id="descricao" class="form-control"
-                               placeholder="Ex: Tomate cereja"
-                               required>
+                               placeholder="Ex: Tomate cereja" required>
                     </div>
-                    <div class="form-group mb-3">
-                        <label for="preco" class="font-weight-bold">Preço (R$)</label>
-                        <input type="number" name="preco" step="0.01" id="preco" class="form-control"
-                               placeholder="Ex: 4.50"
-                               required>
+                    <div class="mb-3">
+                        <label for="preco" class="form-label fw-bold">Preço (R$)</label>
+                        <input type="number" name="preco" step="0.01" min="1" id="preco" class="form-control"
+                               placeholder="Ex: 4.50" required>
                     </div>
-                    <div class="form-group mb-3">
-                        <label for="unidade" class="font-weight-bold">Unidade</label>
-                        <select name="unidade" id="unidade" class="form-control" style="padding: 0 8px" id="unidade">
+                    <div class="mb-3">
+                        <label for="unidade" class="form-label fw-bold">Unidade</label>
+                        <select name="unidade" id="unidade" class="form-select">
                             <option value="kg">kg</option>
                             <option value="g">g</option>
                             <option value="un">un</option>
                         </select>
                     </div>
-                    <div class="form-group mb-0">
-                        <label for="estoque" class="font-weight-bold">Estoque</label>
-                        <input type="number" name="estoque" class="form-control" id="estoque" placeholder="Ex: 100"
-                               required>
+                    <div class="mb-0">
+                        <label for="estoque" class="form-label fw-bold">Estoque</label>
+                        <input type="number" name="estoque" id="estoque" min="0" class="form-control"
+                               placeholder="Ex: 100" required>
                     </div>
                 </div>
-                <div class="modal-footer bg-light d-flex justify-content-center align-items-center">
-                    <button type="button" class="btn btn-outline-secondary w-50" data-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-success w-50">Salvar Produto</button>
+
+                <div class="modal-footer bg-light d-flex justify-content-between">
+                    <button type="button" class="btn btn-outline-secondary w-45" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success w-45">Editar Produto</button>
                 </div>
             </form>
         </div>
@@ -170,24 +165,26 @@
 
 <div class="page-container login-area">
     <aside class="sidebar-menu bg-dark text-light">
-        <div class="sidebar-header p-3">
+        <div class="sidebar-header bg-dark">
             <a href="painel.php" class="text-light text-decoration-none">
                 <h2>AgriFood</h2>
                 <small>Produtor</small>
             </a>
         </div>
-        <nav class="main-menu p-3">
+        <nav class="main-menu">
             <ul class="metismenu" id="menu">
                 <li>
-                    <a href="#" aria-expanded="true" class="text-light d-block py-2">Perfil</a>
-                    <ul class="collapse list-unstyled ps-3">
-                        <li><a href="viewEditarPerfil.php" class="text-light">Editar</a></li>
-                        <li><a href="viewAlterarSenha.php" class="text-light">Alterar senha</a></li>
+                    <a href="#perfilMenu" class="text-light d-block py-2" data-bs-toggle="collapse" aria-expanded="false">
+                        Perfil <i class="bi bi-chevron-down"></i>
+                    </a>
+                    <ul class="collapse list-unstyled ps-4" id="perfilMenu">
+                        <li><a href="viewEditarPerfil.php" class="text-light py-1 d-block">Editar</a></li>
+                        <li><a href="viewAlterarSenha.php" class="text-light py-1 d-block">Alterar senha</a></li>
                     </ul>
                 </li>
                 <li><a href="viewListagemFeira.php" class="text-light d-block py-2">Feiras</a></li>
-                <li><a href="viewListarProduto.php" aria-expanded="true" class="text-light d-block py-2">Produtos</a>
-
+                <li><a href="viewListarProduto.php" aria-expanded="true"
+                       class="text-light d-block py-2">Produtos</a>
                 <li><a href="#" class="text-light d-block py-2">Relatórios</a></li>
                 <li><a href="logout.php" class="text-light d-block py-2">Sair</a></li>
             </ul>
@@ -201,28 +198,25 @@
                     <h2 class=" mb-4">Seus Produtos</h2>
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <form method="get" class="form-inline">
-                            <label for="filtro" class="mr-2 font-weight-bold">Filter:</label>
-                            <select name="filtro" id="filtro" onchange="this.form.submit()" class="form-control"
-                                    style="padding: 0 15px">
-                                <option value="todos" <?= $filtro === 'todos' ? 'selected' : '' ?>>Todos</option>
-                                <option value="disponiveis" <?= $filtro === 'disponiveis' ? 'selected' : '' ?>>
-                                    Disponíveis
-                                </option>
-                                <option value="indisponiveis" <?= $filtro === 'indisponiveis' ? 'selected' : '' ?>>
-                                    Indisponíveis
-                                </option>
-                            </select>
+                            <div class="d-flex align-items-center">
+                                <label for="filtro" class="me-2 fw-bold">Filtrar:</label>
+                                <form method="get">
+                                    <select name="filtro" id="filtro" class="form-select" onchange="this.form.submit()" style="width: 150px;">
+                                        <option value="todos" <?= $filtro === 'todos' ? 'selected' : '' ?>>Todos</option>
+                                        <option value="disponivel" <?= $filtro === 'disponivel' ? 'selected' : '' ?>>Disponível</option>
+                                        <option value="indisponiveis" <?= $filtro === 'indisponiveis' ? 'selected' : '' ?>>Indisponiveis</option>
+                                    </select>
+                                </form>
+                            </div>
                         </form>
-                        <button type="button" class="btn btn-primary" data-toggle="modal"
-                                data-target="#modalAdicionarProduto">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAdicionarProduto">
                             Adicionar Produto
                         </button>
                     </div>
 
-                    <div class="single-table">
-                        <div class="table-responsive">
-                            <table class="table text-center" id="table_product">
-                                <thead class="text-uppercase bg-dark">
+                    <div class="table-responsive shadow-sm rounded">
+                        <table class="table table-bordered table-striped table-hover align-middle mb-0" id="table_product">
+                                <thead class="text-uppercase table-dark">
                                 <tr class="text-white">
                                     <th scope="col">Nome</th>
                                     <th scope="col">Preço</th>
@@ -242,20 +236,19 @@
         </div>
     </div>
 </div>
+</body>
 
-<!-- Scripts -->
-<script src="assets/js/vendor/jquery-2.2.4.min.js"></script>
-<script src="assets/js/popper.min.js"></script>
-<script src="assets/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 <script src="assets/js/owl.carousel.min.js"></script>
 <script src="assets/js/metisMenu.min.js"></script>
 <script src="assets/js/jquery.slimscroll.min.js"></script>
 <script src="assets/js/jquery.slicknav.min.js"></script>
+
 <script src="assets/js/plugins.js"></script>
 <script src="assets/js/scripts.js"></script>
-
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="assets/js/crud.js"></script>
-</body>
 
 </html>

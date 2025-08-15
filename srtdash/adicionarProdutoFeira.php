@@ -5,10 +5,11 @@
     use App\Entity\ProdutoFeira;
     use App\Entity\Produto;
 
+
     $produtoExistente = ProdutoFeira::getProduto($_POST['idFeira'], $_POST['idProduto']);
     if ($produtoExistente) {
         echo json_encode([
-            'status' => 'success',
+            'status' => 'error',
             'message' => 'Produto já cadastrado.'
         ]);
         exit;
